@@ -4,6 +4,13 @@
   "data_alias": "ck-request-asplos18-caffe-intel",
   "data_name": "ck-request-asplos18-caffe-intel",
   "dict": {
+    "repo_deps": [
+      {
+        "repo_uoa": "ck-caffe",
+        "repo_url": "https://github.com/dividiti/ck-caffe"
+      }
+    ],
+    "recache": "yes",
     "shared": "git",
     "url": "https://github.com/ctuning/ck-request-asplos18-caffe-intel"
   }
