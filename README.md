@@ -40,8 +40,10 @@ $ ck install package:imagenet-2012-val
 
 #### ResNet50
 
+**NB:** ResNet uses the standard ImageNet mean file of resolution `256x256`, so the inputs must match that.
+
 ```
-$ ck install package:imagenet-2012-val-lmdb-224
+$ ck install package:imagenet-2012-val-lmdb-256
 $ ck install package:caffemodel-resnet50
 ```
 
