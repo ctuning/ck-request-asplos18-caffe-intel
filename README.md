@@ -37,6 +37,13 @@ $ ck install package:caffemodel-ssd-voc-300
 
 ### Install ImageNet validation datasets
 
+**NB:** If you already have the ImageNet validation dataset downloaded, e.g. in
+`/data/ilsvrc2012_val/`, you can simply register it with CK as follows:
+
+```
+$ ck detect soft:dataset.imagenet.val --full_path=/data/ilsvrc2012_val/ILSVRC2012_val_00000001.JPEG
+```
+
 #### Reduced (500 images)
 ```
 $ ck install package:imagenet-2012-val-min
