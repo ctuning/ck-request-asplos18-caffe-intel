@@ -1,0 +1,56 @@
+{
+  "backup_data_uid": "800b4ccfa1ecf063", 
+  "data_name": "convert-model-int8", 
+  "no_compile": "yes", 
+  "no_target_file": "yes", 
+  "only_for_target_os_tags": [
+    "linux"
+  ], 
+  "print_files_after_run": [
+    "stdout.log",
+    "stderr.log"
+  ], 
+  "process_in_tmp": "yes", 
+  "program": "yes", 
+  "run_cmds": {
+    "default": {
+      "ignore_return_code": "no", 
+      "run_time": {
+        "params": {
+          "caffemodel_key": "val"
+        }, 
+        "pre_process_via_ck": {
+          "data_uoa": "569404c41618603a",
+          "script_name": "preprocess"
+        },
+        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../convert.py", 
+        "run_cmd_out1": "stdout.log", 
+        "run_cmd_out2": "stderr.log", 
+        "run_output_files": [
+          "stdout.log",
+          "stderr.log"
+        ]
+      } 
+    } 
+  }, 
+  "run_deps": {
+    "caffemodel": {
+      "local": "yes", 
+      "name": "Caffe model (net and weights)", 
+      "sort": 40, 
+      "tags": "caffemodel"
+    }, 
+    "lib-caffe": {
+      "local": "yes", 
+      "name": "Caffe framework", 
+      "sort": 30, 
+      "tags": "lib,caffe,intel"
+    }
+  }, 
+  "run_vars": {
+  },
+  "tags": [
+    "intel"
+  ],
+  "version": "1.0.0"
+}
