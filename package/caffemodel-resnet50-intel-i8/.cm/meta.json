@@ -21,7 +21,7 @@
           "val_batch_size": 50
         },
         "accuracy_layers": [ "accuracy/top-1", "accuracy/top-5", "fc1000" ]
-      },        
+      },
       "deploy": {
         "substitute": {
           "batch_size": 1
@@ -39,7 +39,13 @@
       "sort": 20, 
       "tags": "caffemodel,resnet50",
       "no_tags": "intel"
-    } 
+    },
+    "lib-caffe": {
+      "local": "yes",
+      "name": "Intel Caffe",
+      "sort": 30,
+      "tags": "lib,caffe,intel"
+    }
   }, 
   "end_full_path": {
     "linux": "train_val.prototxt"
