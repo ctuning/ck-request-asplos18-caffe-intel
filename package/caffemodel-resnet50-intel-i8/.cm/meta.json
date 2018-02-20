@@ -11,7 +11,8 @@
       "DEPLOY_ITERATIONS": 4,
       "TRAIN_VAL_BATCH_SIZE": 50,
       "TRAIN_VAL_BLOB_NAME": "accuracy/top-1",
-      "TRAIN_VAL_ITERATIONS": 4
+      "TRAIN_VAL_ITERATIONS": 4,
+      "MODEL_IMAGE_SIZE": 224
     }, 
     "no_os_in_suggested_path": "yes", 
     "no_ver_in_suggested_path": "no", 
