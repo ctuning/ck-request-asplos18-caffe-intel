@@ -1,0 +1,20 @@
+name: "ResNet-50"
+layer {
+  name: "data"
+  type: "Data"
+  top: "data"
+  top: "label"
+  include {
+    phase: TEST
+  }
+  transform_param {
+    mirror: false
+    crop_size: 224
+    mean_file: "$#val_mean#$"
+  }
+  data_param {
+    source: "$#val_lmdb#$"
+    batch_size: $#val_batch_size#$
+    backend: LMDB
+  }
+}
