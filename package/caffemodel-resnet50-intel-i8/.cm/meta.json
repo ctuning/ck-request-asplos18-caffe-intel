@@ -2,8 +2,6 @@
   "check_exit_status": "yes", 
   "customize": {
     "extra_dir": "",
-    "file_with_weights": "ResNet-50-model.caffemodel",
-    "file_mean_bin": "ResNet_mean.binaryproto",
     "force_ask_path": "yes", 
     "install_env": {
       "DEPLOY_BATCH_SIZE": 1,

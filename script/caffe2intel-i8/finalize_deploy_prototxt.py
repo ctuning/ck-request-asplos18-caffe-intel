@@ -17,6 +17,8 @@ if __name__ == '__main__':
   parser.add_argument('-m', '--model', action='store', dest='MODEL')
   params = parser.parse_args()
 
+  print('Postprocessing {} ...'.format(params.MODEL))
+
   net = caffe_pb2.NetParameter()
   with open(params.MODEL, 'r') as f:
     text_format.Merge(f.read(), net)
@@ -30,11 +32,12 @@ if __name__ == '__main__':
     net.layer.remove(layer)
 
   # Prepare standart input
-  net.input = 'data'
-  net.input_shape.append(-1)
-  net.input_shape.append(3)
-  net.input_shape.append(int(os.getenv('MODEL_IMAGE_SIZE')))
-  net.input_shape.append(int(os.getenv('MODEL_IMAGE_SIZE')))
+  net.input.append('data')
+  shape = net.input_shape.add()
+  shape.dim.append(-1)
+  shape.dim.append(3)
+  shape.dim.append(int(os.getenv('MODEL_IMAGE_SIZE')))
+  shape.dim.append(int(os.getenv('MODEL_IMAGE_SIZE')))
 
   # Serialize prototxt
   txt = text_format.MessageToString(net)
@@ -43,5 +46,5 @@ if __name__ == '__main__':
   # as it's type safe, so do it with plain string replacement
   txt = txt.replace('dim: -1', 'dim: $#batch_size#$')
 
-  with open(params.MODEL+'_1', 'w') as f:
+  with open(params.MODEL, 'w') as f:
     f.write(txt)

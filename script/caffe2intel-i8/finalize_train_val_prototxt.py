@@ -17,6 +17,8 @@ if __name__ == '__main__':
   parser.add_argument('-m', '--model', action='store', dest='MODEL')
   params = parser.parse_args()
 
+  print('Postprocessing {} ...'.format(params.MODEL))
+
   net = caffe_pb2.NetParameter()
   with open(params.MODEL, 'r') as f:
     text_format.Merge(f.read(), net)
@@ -27,15 +29,15 @@ if __name__ == '__main__':
     if layer.name == 'data':
       layer.transform_param.mean_file = '$#val_mean#$'
       layer.data_param.source = '$#val_lmdb#$'
-      layer.batch_size = -1
+      layer.data_param.batch_size = 0
 
   # Serialize prototxt
   txt = text_format.MessageToString(net)
 
   # We cant insert strings into integer field using caffe_pb2 
   # as it's type safe, so do it with plain string replacement
-  txt = txt.replace('batch_size: -1', 'batch_size: $#val_batch_size#$')
+  txt = txt.replace('batch_size: 0', 'batch_size: $#val_batch_size#$')
 
-  with open(params.MODEL+'_1', 'w') as f:
+  with open(params.MODEL, 'w') as f:
     f.write(txt)  
 
