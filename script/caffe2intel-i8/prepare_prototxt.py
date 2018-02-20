@@ -19,19 +19,13 @@ if __name__ == '__main__':
 
   target = ''
 
-  input_layer_file = params.MODEL + '.input'
-  if os.path.isfile(input_layer_file):
-    with open(input_layer_file) as f:
-      target = f.read()
-      target = target.replace('$#val_mean#$', os.getenv('CK_ENV_MODEL_CAFFE_MEAN_BIN'))
-      target = target.replace('$#val_lmdb#$', os.getenv('CK_CAFFE_IMAGENET_VAL_LMDB'))
-      target = target.replace('$#val_batch_size#$', os.getenv('TRAIN_VAL_BATCH_SIZE'))
-      target = target.replace('$#batch_size#$', os.getenv('DEPLOY_BATCH_SIZE'))
+  with open(params.MODEL) as f:
+    target = f.read()
 
-  with open(params.MODEL, 'r') as f:
-    if target:
-      target += '\n'
-    target += f.read()
+  target = target.replace('$#val_mean#$', os.getenv('CK_ENV_MODEL_CAFFE_MEAN_BIN'))
+  target = target.replace('$#val_lmdb#$', os.getenv('CK_CAFFE_IMAGENET_VAL_LMDB'))
+  target = target.replace('$#val_batch_size#$', os.getenv('TRAIN_VAL_BATCH_SIZE'))
+  target = target.replace('$#batch_size#$', os.getenv('DEPLOY_BATCH_SIZE'))
 
   with open(params.TARGET, 'w') as f:
     f.write(target)

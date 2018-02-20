@@ -1,3 +1,21 @@
+name: "ResNet-50"
+layer {
+  name: "data"
+  type: "DummyData"
+  top: "data"
+  dummy_data_param {
+    data_filler {
+      type: "constant"
+      value: 0.0099999997764825821
+    }
+    shape {
+      dim: $#batch_size#$
+      dim: 3
+      dim: 224
+      dim: 224
+    }
+  }
+}
 layer {
   name: "data"
   type: "DummyData"
@@ -2544,4 +2562,10 @@ layer {
       value: 0
     }
   }
+}
+layer {
+  name: "prob"
+  type: "Softmax"
+  bottom: "fc1000"
+  top: "prob"
 }

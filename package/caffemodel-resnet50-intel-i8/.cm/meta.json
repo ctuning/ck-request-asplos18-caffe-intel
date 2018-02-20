@@ -3,15 +3,15 @@
   "customize": {
     "extra_dir": "",
     "file_with_weights": "ResNet-50-model.caffemodel",
-    "file_mean_bin": "ResNet_mean.binaryproto",    
+    "file_mean_bin": "ResNet_mean.binaryproto",
     "force_ask_path": "yes", 
     "install_env": {
-      "DEPLOY_BATCH_SIZE": 64,
-      "DEPLOY_BLOB_NAME": "fc1000",
-      "DEPLOY_ITERATIONS": 64,
+      "DEPLOY_BATCH_SIZE": 1,
+      "DEPLOY_BLOB_NAME": "prob",
+      "DEPLOY_ITERATIONS": 4,
       "TRAIN_VAL_BATCH_SIZE": 50,
       "TRAIN_VAL_BLOB_NAME": "accuracy/top-1",
-      "TRAIN_VAL_ITERATIONS": 64
+      "TRAIN_VAL_ITERATIONS": 4
     }, 
     "no_os_in_suggested_path": "yes", 
     "no_ver_in_suggested_path": "no", 
@@ -23,7 +23,7 @@
           "val_batch_size": 50
         },
         "accuracy_layers": [ "accuracy/top-1", "accuracy/top-5", "fc1000" ]
-      },        
+      },
       "deploy": {
         "substitute": {
           "batch_size": 1
@@ -47,6 +47,12 @@
       "name": "ImageNet dataset (lmdb)", 
       "sort": 30, 
       "tags": "dataset,imagenet,val-lmdb"
+    },
+    "lib-caffe": {
+      "local": "yes",
+      "name": "Intel Caffe",
+      "sort": 40,
+      "tags": "lib,caffe,intel"
     }
   }, 
   "end_full_path": {
