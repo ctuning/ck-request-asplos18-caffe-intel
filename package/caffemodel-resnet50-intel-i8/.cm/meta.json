@@ -2,6 +2,8 @@
   "check_exit_status": "yes", 
   "customize": {
     "extra_dir": "",
+    "file_with_weights": "ResNet-50-model.caffemodel",
+    "file_mean_bin": "ResNet_mean.binaryproto",
     "force_ask_path": "yes", 
     "install_env": {
       "DEPLOY_BATCH_SIZE": 1,
@@ -18,7 +20,6 @@
       "val": {
         "template": "train_val_quantized.prototxt",
         "substitute":{
-          "val_mean": "$#path_to_imagenet_aux#$imagenet_mean.binaryproto",
           "val_batch_size": 50
         },
         "accuracy_layers": [ "accuracy/top-1", "accuracy/top-5", "fc1000" ]
