@@ -1,0 +1,70 @@
+{
+  "no_compile": "yes", 
+  "no_target_file": "yes",
+  "process_in_tmp": "yes", 
+  "program": "yes", 
+  "run_cmds": {
+    "convert-coco": {
+      "ignore_return_code": "no", 
+      "run_time": {
+        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../convert.py"
+      },
+      "run_deps": {
+        "model-and-weights": {
+          "local": "yes",
+          "name": "SSD model and weights",
+          "sort": 10,
+          "tags": "caffemodel,ssd-coco"
+        },
+        "dataset": {
+          "local": "yes",
+          "name": "COCO dataset",
+          "sort": 20,
+          "tags": "dataset,coco,val"
+        }
+      }
+    },
+    "convert-voc": {
+      "ignore_return_code": "no", 
+      "run_time": {
+        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../convert.py"
+      },
+      "run_deps": {
+        "model-and-weights": {
+          "local": "yes",
+          "name": "SSD model and weights",
+          "sort": 10,
+          "tags": "caffemodel,ssd-voc"
+        },
+        "dataset": {
+          "local": "yes",
+          "name": "VOC dataset",
+          "sort": 20,
+          "tags": "dataset,voc,val"
+        }
+      }
+    }
+  },
+  "run_vars": {
+    "CK_IMAGES_PERCENT": 1
+  },
+  "run_deps": {
+    "python": {
+      "local": "yes",
+      "name": "Python",
+      "sort": 10,
+      "tags": "compiler,python"
+    },
+    "lib-caffe": {
+      "local": "yes", 
+      "name": "Caffe framework", 
+      "sort": 30, 
+      "tags": "lib,caffe,ssd"
+    }
+  },
+  "tags": [
+    "caffe",
+    "intel",
+    "vint8"
+  ]
+}
