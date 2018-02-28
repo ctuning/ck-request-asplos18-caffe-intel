@@ -11,6 +11,7 @@ import os
 import argparse
 import utils
 
+CUR_DIR = os.path.realpath('.')
 PREPARED_INFO_FILE = 'prepared_info.json'
 BATCH_SIZE = int(os.getenv('CK_BATCH_SIZE', 1))
 CAFFE_BIN_DIR = os.getenv('CK_ENV_LIB_CAFFE_BIN')
@@ -27,7 +28,7 @@ if __name__ == '__main__':
   info = utils.read_json(PREPARED_INFO_FILE)
   image_count = int(info['lmdb_image_count'])
   src_prototxt_file = info['test_prototxt_f32'] if params.MODE == 'F32' else info['test_prototxt_i8']
-  dst_prototxt_file = 'tmp.prototxt'
+  dst_prototxt_file = os.path.join(CUR_DIR, 'tmp.prototxt')
 
   print('\nPreparing {} ...'.format(src_prototxt_file))
   utils.prepare_test_prototxt(
@@ -44,9 +45,9 @@ if __name__ == '__main__':
   cmd = []
   cmd.append(os.path.join(CAFFE_BIN_DIR, 'caffe'))
   cmd.append('test')
-  cmd.append('-model ' + dst_prototxt_file)
-  cmd.append('-weights ' + info['weights'])
-  cmd.append('-iterations ' + str(image_count/BATCH_SIZE))
-  cmd.append('-detection')
-  utils.run_command(cmd)
-  
+  cmd.append('--model=' + dst_prototxt_file)
+  cmd.append('--weights=' + info['weights'])
+  cmd.append('--iterations=' + str(image_count/BATCH_SIZE))
+  cmd.append('--detection')
+  utils.run_command(cmd, 'test_'+params.MODE+'.log')
+

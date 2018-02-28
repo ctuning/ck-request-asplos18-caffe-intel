@@ -72,7 +72,7 @@
       "local": "yes", 
       "name": "Caffe framework", 
       "sort": 30, 
-      "tags": "lib,caffe,ssd"
+      "tags": "lib,caffe,intel"
     }
   },
   "tags": [

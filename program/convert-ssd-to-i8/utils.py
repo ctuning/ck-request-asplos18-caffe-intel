@@ -17,18 +17,20 @@ from google.protobuf import text_format
 
 ########################################################################
 
-# Should be more robust criterion, may be lib should proivde some env var
+# Should be more robust criterion, may be lib should provide some env var
 def model_img_w(model_path): return 300 if '-300' in model_path else 512
 def model_img_h(model_path): return 300 if '-300' in model_path else 512
 
 ########################################################################
 
-def run_command(args_list):
-  print(' '.join(args_list))
-  process = subprocess.Popen(args_list, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-  output = process.communicate()[0]
-  print(output)
-  return output
+def run_command(args_list, log_file=None):
+  cmd = ' '.join(args_list)
+  print(cmd)
+  if log_file:
+    if os.path.isfile(log_file):
+      os.remove(log_file)
+    cmd = cmd + ' 2>&1|tee ' + log_file
+  subprocess.call(cmd, shell=True)
 
 ########################################################################
 
@@ -50,7 +52,7 @@ def read_json(file_name):
 def write_json(file_name, obj):
   with open(file_name, 'w') as f:
     json.dump(obj, f, indent=2, sort_keys=True)
-    
+
 ########################################################################
 
 def read_text(file_name):

@@ -61,11 +61,11 @@ def make_image_list():
   # Generate image name and size infomation.
   cmd = []
   cmd.append(os.path.join(CAFFE_BIN_DIR, 'get_image_size'))
-  cmd.append('') # we can leave root path empty as our file list contains absolute pathes
+  cmd.append('""') # we can leave root path empty as our file list contains absolute pathes
   cmd.append(IMAGE_LIST_FILE)
   cmd.append(NAME_SIZE_FILE)
-  utils.run_command(cmd)
-      
+  utils.run_command(cmd, 'get_image_size.log')
+
 ########################################################################
 
 def make_lmdb():
@@ -75,7 +75,7 @@ def make_lmdb():
   all listed images and its labels into LBDM database.
   '''
   utils.rmdir(LMDB_TARGET_DIR)
-    
+
   cmd = []
   cmd.append(os.path.join(CAFFE_BIN_DIR, 'convert_annoset'))
   cmd.append('--anno_type=detection')
@@ -86,33 +86,28 @@ def make_lmdb():
   cmd.append('--backend=lmdb')
   cmd.append('--encoded')
   cmd.append('--encode_type=jpg')
-  cmd.append('') # we can leave root path empty as our file list contains absolute pathes
+  cmd.append('""') # we can leave root path empty as our file list contains absolute pathes
   cmd.append(IMAGE_LIST_FILE)
   cmd.append(LMDB_TARGET_DIR)
-  utils.run_command(cmd)
+  utils.run_command(cmd, 'convert_annoset.log')
 
 ########################################################################
 
-def convert_prototxt(prototxt_file, dst, blob_name):
+def convert_prototxt():
   '''
   Converts f32 prototxt into quantized version using Intel's tool calibrator.py
   '''
-  txt = utils.read_text(prototxt_file)
-  utils.write_text(dst, txt)
-  return
-  
   cmd = []
   cmd.append(PYTHON)
   cmd.append(os.path.join(CAFFE_DIR, '..', 'src', 'scripts', 'calibrator.py'))
   cmd.append('--root=' + CAFFE_DIR)
   cmd.append('--weights=' + WEIGHTS_FILE)
-  cmd.append('--model=' + prototxt_file)
+  cmd.append('--model=' + TMP_TEST_PROTOTXT_FILE)
   cmd.append('--iterations=' + str(LMDB_IMAGE_COUNT / BATCH_SIZE))
-  cmd.append('--blob_name=' + blob_name)
-  output = utils.run_command(cmd)
-  with open('convert_voc.log', 'w') as f:
-    f.write(output)
-  
+  cmd.append('--blob_name=detection_eval')
+  utils.run_command(cmd, 'convert_prototxt.log')
+
+
 ########################################################################
 
 def postprocess_test_prototxt():
@@ -150,7 +145,7 @@ def make_deploy_prototxt():
   The differences between them are first and last layers.
   '''
   net = utils.read_prototxt(DST_TEST_PROTOTXT_FILE)
-  
+
   # Remove first and last layers
   layers_to_remove = []
   for layer in net.layer:
@@ -185,7 +180,7 @@ def make_deploy_prototxt():
   txt = txt.replace('dim: -1', 'dim: $#batch_size#$')
 
   utils.write_text(DST_DEPLOY_PROTOTXT_FILE, txt)
-  
+
 ########################################################################
 
 if __name__ == '__main__':
@@ -231,7 +226,7 @@ if __name__ == '__main__':
     )
 
     print('\nConverting {} ...'.format(TMP_TEST_PROTOTXT_FILE))
-    convert_prototxt(TMP_TEST_PROTOTXT_FILE, DST_TEST_PROTOTXT_FILE, 'detection_eval')
+    convert_prototxt()
 
     print('\Making {} ...'.format(DST_DEPLOY_PROTOTXT_FILE))
     make_deploy_prototxt()
@@ -250,7 +245,7 @@ if __name__ == '__main__':
     info['label_map_file'] = LABEL_MAP_FILE
     info['name_size_file'] = NAME_SIZE_FILE
     utils.write_json(PREPARED_INFO_FILE, info)
-    
+
   finally:
     print('\nFinalizing...')
     if caffe_package_init_file_uid:
