@@ -43,6 +43,18 @@
           "tags": "dataset,voc,val"
         }
       }
+    },
+    "test-f32": {
+      "ignore_return_code": "no", 
+      "run_time": {
+        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../test.py --mode=F32"
+      }
+    },
+    "test-i8": {
+      "ignore_return_code": "no", 
+      "run_time": {
+        "run_cmd_main": "$<<CK_ENV_COMPILER_PYTHON_FILE>>$ ../test.py --mode=I8"
+      }
     }
   },
   "run_vars": {
@@ -60,7 +72,7 @@
       "local": "yes", 
       "name": "Caffe framework", 
       "sort": 30, 
-      "tags": "lib,caffe,intel"
+      "tags": "lib,caffe,ssd"
     }
   },
   "tags": [

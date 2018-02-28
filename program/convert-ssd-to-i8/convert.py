@@ -13,8 +13,6 @@ import numpy as np
 from google.protobuf import text_format
 import utils
 
-caffe_pb2 = utils.import_caffe_pb2()
-
 CUR_DIR = os.path.realpath('.')
 MODEL_DIR = os.getenv('CK_ENV_MODEL_CAFFE')
 IMAGES_DIR = os.getenv('CK_ENV_DATASET_IMAGE_DIR')
@@ -38,6 +36,7 @@ DST_DEPLOY_PROTOTXT_FILE = os.path.join(CUR_DIR, 'deploy_quantized.prototxt')
 BATCH_SIZE = int(os.getenv('CK_BATCH_SIZE', 1))
 WEIGHTS_FILE = os.getenv('CK_ENV_MODEL_CAFFE_WEIGHTS')
 PYTHON = os.getenv('CK_ENV_COMPILER_PYTHON_FILE')
+PREPARED_INFO_FILE = 'prepared_info.json'
 
 ########################################################################
 
@@ -94,26 +93,10 @@ def make_lmdb():
 
 ########################################################################
 
-def prepare_test_prototxt():
-  net = caffe_pb2.NetParameter()
-  utils.read_prototxt(SRC_TEST_PROTOTXT_FILE, net)
-  for layer in net.layer:
-    if layer.name == 'data':
-      layer.data_param.source = LMDB_TARGET_DIR
-      layer.data_param.batch_size = BATCH_SIZE
-      layer.annotated_data_param.label_map_file = LABEL_MAP_FILE
-    elif layer.name == 'detection_out':
-      p = layer.detection_output_param.save_output_param
-      p.label_map_file = LABEL_MAP_FILE
-      p.name_size_file = NAME_SIZE_FILE
-      p.num_test_image = LMDB_IMAGE_COUNT
-    elif layer.name == 'detection_eval':
-      layer.detection_evaluate_param.name_size_file = NAME_SIZE_FILE
-  utils.write_prototxt(TMP_TEST_PROTOTXT_FILE, net)
-  
-########################################################################
-
 def convert_prototxt(prototxt_file, dst, blob_name):
+  '''
+  Converts f32 prototxt into quantized version using Intel's tool calibrator.py
+  '''
   txt = utils.read_text(prototxt_file)
   utils.write_text(dst, txt)
   return
@@ -133,8 +116,11 @@ def convert_prototxt(prototxt_file, dst, blob_name):
 ########################################################################
 
 def postprocess_test_prototxt():
-  net = caffe_pb2.NetParameter()
-  utils.read_prototxt(DST_TEST_PROTOTXT_FILE, net)
+  '''
+  Prepares final version of quantized prototxt
+  replacing real paths and batch size to respective ck-variables.
+  '''
+  net = utils.read_prototxt(DST_TEST_PROTOTXT_FILE)
 
   for layer in net.layer:
     if layer.name == 'data':
@@ -159,8 +145,11 @@ def postprocess_test_prototxt():
 ########################################################################
 
 def make_deploy_prototxt():
-  net = caffe_pb2.NetParameter()
-  utils.read_prototxt(DST_TEST_PROTOTXT_FILE, net)
+  '''
+  Makes deploy.prototxt model based on test.prototxt.
+  The differences between them are first and last layers.
+  '''
+  net = utils.read_prototxt(DST_TEST_PROTOTXT_FILE)
   
   # Remove first and last layers
   layers_to_remove = []
@@ -220,6 +209,9 @@ if __name__ == '__main__':
   else:
     print('{} already exists'.format(caffe_package_init_file))
 
+  if os.path.isfile(PREPARED_INFO_FILE):
+    os.remove(PREPARED_INFO_FILE)
+
   try:
     print('\nMaking image list files...')
     make_image_list()
@@ -228,7 +220,15 @@ if __name__ == '__main__':
     make_lmdb()
 
     print('\nPreparing {} ...'.format(SRC_TEST_PROTOTXT_FILE))
-    prepare_test_prototxt()
+    utils.prepare_test_prototxt(
+      src_file = SRC_TEST_PROTOTXT_FILE,
+      dst_file = TMP_TEST_PROTOTXT_FILE,
+      lmdb_dir = LMDB_TARGET_DIR,
+      batch_size = BATCH_SIZE,
+      label_map_file = LABEL_MAP_FILE,
+      name_size_file = NAME_SIZE_FILE,
+      image_count = LMDB_IMAGE_COUNT
+    )
 
     print('\nConverting {} ...'.format(TMP_TEST_PROTOTXT_FILE))
     convert_prototxt(TMP_TEST_PROTOTXT_FILE, DST_TEST_PROTOTXT_FILE, 'detection_eval')
@@ -238,6 +238,18 @@ if __name__ == '__main__':
 
     print('\nPostprocessing {} ...'.format(DST_TEST_PROTOTXT_FILE))
     postprocess_test_prototxt()
+
+    info = {}
+    info['weights'] = WEIGHTS_FILE
+    info['lmdb_dir'] = LMDB_TARGET_DIR
+    info['lmdb_image_count'] = LMDB_IMAGE_COUNT
+    info['test_prototxt_f32'] = SRC_TEST_PROTOTXT_FILE
+    info['test_prototxt_i8'] = DST_TEST_PROTOTXT_FILE
+    info['deploy_prototxt_f32'] = SRC_DEPLOY_PROTOTXT_FILE
+    info['deploy_prototxt_i8'] = DST_DEPLOY_PROTOTXT_FILE
+    info['label_map_file'] = LABEL_MAP_FILE
+    info['name_size_file'] = NAME_SIZE_FILE
+    utils.write_json(PREPARED_INFO_FILE, info)
     
   finally:
     print('\nFinalizing...')
