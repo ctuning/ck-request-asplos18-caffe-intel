@@ -23,9 +23,10 @@ def model_img_h(model_path): return 300 if '-300' in model_path else 512
 
 def run_command(args_list):
   print(' '.join(args_list))
-  process = subprocess.Popen(args_list, stdout=subprocess.PIPE)
+  process = subprocess.Popen(args_list, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
   output = process.communicate()[0]
   print(output)
+  return output
 
 
 # Despite of CK_ENV_LIB_CAFFE_PYTHON is in PYTHONPATH, we can't import caffe_pb2

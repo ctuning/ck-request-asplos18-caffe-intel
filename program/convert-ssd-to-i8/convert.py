@@ -35,7 +35,7 @@ SRC_DEPLOY_PROTOTXT_FILE = os.path.join(MODEL_DIR, 'deploy.prototxt')
 TMP_DEPLOY_PROTOTXT_FILE = os.path.join(CUR_DIR, 'deploy.prototxt')
 DST_DEPLOY_PROTOTXT_FILE = os.path.join(CUR_DIR, 'deploy_quantized.prototxt')
 BATCH_SIZE = int(os.getenv('CK_BATCH_SIZE', 1))
-WEIGHTS_FILE = os.getenv('CK_ENV_MODEL_CAFFE_WEIGHTS_FILE')
+WEIGHTS_FILE = os.getenv('CK_ENV_MODEL_CAFFE_WEIGHTS')
 PYTHON = os.getenv('CK_ENV_COMPILER_PYTHON_FILE')
 
 
@@ -118,6 +118,7 @@ def prepare_deploy_prototxt():
   # change input to be dummy layer
   del net.input[0]
   del net.input_shape[0]
+
   input_layer = net.layer.add()
   input_layer.name = 'data'
   input_layer.type = 'DummyData'
@@ -129,7 +130,7 @@ def prepare_deploy_prototxt():
   shape.dim.append(3)
   shape.dim.append(TARGET_IMG_H)
   shape.dim.append(TARGET_IMG_W)
-  
+
   for layer in net.layer:
     if layer.name == 'detection_out':
       p = layer.detection_output_param.save_output_param
@@ -138,10 +139,10 @@ def prepare_deploy_prototxt():
   utils.write_prototxt(TMP_DEPLOY_PROTOTXT_FILE, net)
 
 
-def convert_prototxt(prototxt_file, dst):
-  txt = utils.read_text(prototxt_file)
-  utils.write_text(dst, txt)
-  return
+def convert_prototxt(prototxt_file, dst, blob_name):
+  #txt = utils.read_text(prototxt_file)
+  #utils.write_text(dst, txt)
+  #return
   
   cmd = []
   cmd.append(PYTHON)
@@ -150,8 +151,10 @@ def convert_prototxt(prototxt_file, dst):
   cmd.append('--weights=' + WEIGHTS_FILE)
   cmd.append('--model=' + prototxt_file)
   cmd.append('--iterations=' + str(LMDB_IMAGE_COUNT / BATCH_SIZE))
-  cmd.append('--blob_name=detection_out')
-  utils.run_command(cmd)
+  cmd.append('--blob_name=' + blob_name)
+  output = utils.run_command(cmd)
+  with open('convert_voc.log', 'w') as f:
+    f.write(output)
   
 
 def postprocess_test_prototxt():
@@ -224,27 +227,27 @@ if __name__ == '__main__':
   print('Target image size (HxW): {}x{}'.format(TARGET_IMG_H, TARGET_IMG_W))
 
   print('\nMaking image list files...')
-  #make_image_list()
+  make_image_list()
 
   print('\nMaking lmdb database...')
-  #make_lmdb()
+  make_lmdb()
 
 
   print('\nPreparing {} ...'.format(SRC_TEST_PROTOTXT_FILE))
   prepare_test_prototxt()
 
   print('\nConverting {} ...'.format(TMP_TEST_PROTOTXT_FILE))
-  convert_prototxt(TMP_TEST_PROTOTXT_FILE, DST_TEST_PROTOTXT_FILE)
+  convert_prototxt(TMP_TEST_PROTOTXT_FILE, DST_TEST_PROTOTXT_FILE, 'detection_eval')
 
   print('Postprocessing {} ...'.format(DST_TEST_PROTOTXT_FILE))
   postprocess_test_prototxt()
-  
+
 
   print('\nPreparing {} ...'.format(SRC_DEPLOY_PROTOTXT_FILE))
-  prepare_deploy_prototxt()
+  #prepare_deploy_prototxt()
 
   print('\nConverting {} ...'.format(TMP_DEPLOY_PROTOTXT_FILE))
-  convert_prototxt(TMP_DEPLOY_PROTOTXT_FILE, DST_DEPLOY_PROTOTXT_FILE)
+  #convert_prototxt(TMP_DEPLOY_PROTOTXT_FILE, DST_DEPLOY_PROTOTXT_FILE, 'detection_out')
 
   print('Postprocessing {} ...'.format(DST_DEPLOY_PROTOTXT_FILE))
-  postprocess_deploy_prototxt()
+  #postprocess_deploy_prototxt()

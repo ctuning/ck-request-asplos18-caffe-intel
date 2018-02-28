@@ -47,7 +47,7 @@
   },
   "run_vars": {
     "CK_IMAGES_PERCENT": 1,
-    "CK_BATCH_SIZE": 1
+    "CK_BATCH_SIZE": 64
   },
   "run_deps": {
     "python": {
@@ -60,7 +60,7 @@
       "local": "yes", 
       "name": "Caffe framework", 
       "sort": 30, 
-      "tags": "lib,caffe,ssd"
+      "tags": "lib,caffe,intel"
     }
   },
   "tags": [
