@@ -8,6 +8,7 @@
 #
 
 import os
+import uuid
 import numpy as np
 from google.protobuf import text_format
 import utils
@@ -38,6 +39,7 @@ BATCH_SIZE = int(os.getenv('CK_BATCH_SIZE', 1))
 WEIGHTS_FILE = os.getenv('CK_ENV_MODEL_CAFFE_WEIGHTS')
 PYTHON = os.getenv('CK_ENV_COMPILER_PYTHON_FILE')
 
+########################################################################
 
 def make_image_list():
   '''
@@ -65,6 +67,7 @@ def make_image_list():
   cmd.append(NAME_SIZE_FILE)
   utils.run_command(cmd)
       
+########################################################################
 
 def make_lmdb():
   '''
@@ -89,6 +92,7 @@ def make_lmdb():
   cmd.append(LMDB_TARGET_DIR)
   utils.run_command(cmd)
 
+########################################################################
 
 def prepare_test_prototxt():
   net = caffe_pb2.NetParameter()
@@ -107,7 +111,7 @@ def prepare_test_prototxt():
       layer.detection_evaluate_param.name_size_file = NAME_SIZE_FILE
   utils.write_prototxt(TMP_TEST_PROTOTXT_FILE, net)
   
-
+########################################################################
 
 def prepare_deploy_prototxt():
   net = caffe_pb2.NetParameter()
@@ -116,7 +120,6 @@ def prepare_deploy_prototxt():
   text_format.Merge(txt, net)
 
   # change input to be dummy layer
-  del net.input[0]
   del net.input_shape[0]
 
   input_layer = net.layer.add()
@@ -130,14 +133,22 @@ def prepare_deploy_prototxt():
   shape.dim.append(3)
   shape.dim.append(TARGET_IMG_H)
   shape.dim.append(TARGET_IMG_W)
+  input_txt = text_format.MessageToString(input_layer)
+  del net.layer[len(net.layer)-1]
 
   for layer in net.layer:
     if layer.name == 'detection_out':
       p = layer.detection_output_param.save_output_param
       p.label_map_file = LABEL_MAP_FILE
 
-  utils.write_prototxt(TMP_DEPLOY_PROTOTXT_FILE, net)
+  # Seems that protobuf does not support inserting into repeated items
+  # but we should put input layer into beginning, so do it as string manipulation
+  txt = text_format.MessageToString(net)
+  txt = txt.replace('input: "data"', 'layer{{\n  {}\n }}'.format(input_txt))
 
+  utils.write_text(TMP_DEPLOY_PROTOTXT_FILE, txt)
+
+########################################################################
 
 def convert_prototxt(prototxt_file, dst, blob_name):
   #txt = utils.read_text(prototxt_file)
@@ -156,6 +167,7 @@ def convert_prototxt(prototxt_file, dst, blob_name):
   with open('convert_voc.log', 'w') as f:
     f.write(output)
   
+########################################################################
 
 def postprocess_test_prototxt():
   net = caffe_pb2.NetParameter()
@@ -183,6 +195,7 @@ def postprocess_test_prototxt():
 
   utils.write_text(DST_TEST_PROTOTXT_FILE, txt)
 
+########################################################################
 
 def postprocess_deploy_prototxt():
   net = caffe_pb2.NetParameter()
@@ -218,6 +231,7 @@ def postprocess_deploy_prototxt():
 
   utils.write_text(DST_DEPLOY_PROTOTXT_FILE, txt)
   
+########################################################################
 
 if __name__ == '__main__':
   print('Model dir: {}'.format(MODEL_DIR))
@@ -226,28 +240,52 @@ if __name__ == '__main__':
   print('Images percent: {}'.format(IMAGES_PERCENT))
   print('Target image size (HxW): {}x{}'.format(TARGET_IMG_H, TARGET_IMG_W))
 
-  print('\nMaking image list files...')
-  make_image_list()
+  print('\nInitializing...')
+  # Path ${CK-TOOLS}/lib-caffe-*/install/python/caffe/ is not a package
+  # but it should to be as calibrator.py need to import caffe_pb2.py
+  caffe_package_init_file = os.path.join(CAFFE_DIR, 'python', 'caffe', '__init__.py')
+  caffe_package_init_file_uid = None
+  if not os.path.isfile(caffe_package_init_file):
+    caffe_package_init_file_uid = '#' + str(uuid.uuid1())
+    print('Making {} ...'.format(caffe_package_init_file))
+    print(caffe_package_init_file_uid)
+    with open(caffe_package_init_file, 'w') as f:
+      f.write(caffe_package_init_file_uid)
+  else:
+    print('{} already exists'.format(caffe_package_init_file))
 
-  print('\nMaking lmdb database...')
-  make_lmdb()
+  try:
+    print('\nMaking image list files...')
+    make_image_list()
+
+    print('\nMaking lmdb database...')
+    make_lmdb()
+
+    print('\nPreparing {} ...'.format(SRC_TEST_PROTOTXT_FILE))
+    #prepare_test_prototxt()
+
+    print('\nConverting {} ...'.format(TMP_TEST_PROTOTXT_FILE))
+    #convert_prototxt(TMP_TEST_PROTOTXT_FILE, DST_TEST_PROTOTXT_FILE, 'detection_eval')
+
+    print('\nPostprocessing {} ...'.format(DST_TEST_PROTOTXT_FILE))
+    #postprocess_test_prototxt()
 
 
-  print('\nPreparing {} ...'.format(SRC_TEST_PROTOTXT_FILE))
-  prepare_test_prototxt()
+    print('\nPreparing {} ...'.format(SRC_DEPLOY_PROTOTXT_FILE))
+    prepare_deploy_prototxt()
 
-  print('\nConverting {} ...'.format(TMP_TEST_PROTOTXT_FILE))
-  convert_prototxt(TMP_TEST_PROTOTXT_FILE, DST_TEST_PROTOTXT_FILE, 'detection_eval')
+    print('\nConverting {} ...'.format(TMP_DEPLOY_PROTOTXT_FILE))
+    convert_prototxt(TMP_DEPLOY_PROTOTXT_FILE, DST_DEPLOY_PROTOTXT_FILE, 'detection_out')
 
-  print('Postprocessing {} ...'.format(DST_TEST_PROTOTXT_FILE))
-  postprocess_test_prototxt()
-
-
-  print('\nPreparing {} ...'.format(SRC_DEPLOY_PROTOTXT_FILE))
-  #prepare_deploy_prototxt()
-
-  print('\nConverting {} ...'.format(TMP_DEPLOY_PROTOTXT_FILE))
-  #convert_prototxt(TMP_DEPLOY_PROTOTXT_FILE, DST_DEPLOY_PROTOTXT_FILE, 'detection_out')
-
-  print('Postprocessing {} ...'.format(DST_DEPLOY_PROTOTXT_FILE))
-  #postprocess_deploy_prototxt()
+    print('\nPostprocessing {} ...'.format(DST_DEPLOY_PROTOTXT_FILE))
+    postprocess_deploy_prototxt()
+    
+  finally:
+    print('\nFinalizing...')
+    if caffe_package_init_file_uid:
+      if os.path.isfile(caffe_package_init_file):
+        existed_uid = utils.read_text(caffe_package_init_file)
+        print('{} exists'.format(caffe_package_init_file))
+        if existed_uid == caffe_package_init_file_uid:
+          os.remove(caffe_package_init_file)
+          print('Removed')
