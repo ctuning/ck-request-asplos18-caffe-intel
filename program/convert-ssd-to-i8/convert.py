@@ -113,47 +113,10 @@ def prepare_test_prototxt():
   
 ########################################################################
 
-def prepare_deploy_prototxt():
-  net = caffe_pb2.NetParameter()
-  txt = utils.read_text(SRC_DEPLOY_PROTOTXT_FILE)
-  txt = txt.replace('$#batch_size#$', '1')
-  text_format.Merge(txt, net)
-
-  # change input to be dummy layer
-  del net.input_shape[0]
-
-  input_layer = net.layer.add()
-  input_layer.name = 'data'
-  input_layer.type = 'DummyData'
-  filler = input_layer.dummy_data_param.data_filler.add()
-  filler.type = 'constant'
-  filler.value = 0.01
-  shape = input_layer.dummy_data_param.shape.add()
-  shape.dim.append(BATCH_SIZE)
-  shape.dim.append(3)
-  shape.dim.append(TARGET_IMG_H)
-  shape.dim.append(TARGET_IMG_W)
-  input_txt = text_format.MessageToString(input_layer)
-  del net.layer[len(net.layer)-1]
-
-  for layer in net.layer:
-    if layer.name == 'detection_out':
-      p = layer.detection_output_param.save_output_param
-      p.label_map_file = LABEL_MAP_FILE
-
-  # Seems that protobuf does not support inserting into repeated items
-  # but we should put input layer into beginning, so do it as string manipulation
-  txt = text_format.MessageToString(net)
-  txt = txt.replace('input: "data"', 'layer{{\n  {}\n }}'.format(input_txt))
-
-  utils.write_text(TMP_DEPLOY_PROTOTXT_FILE, txt)
-
-########################################################################
-
 def convert_prototxt(prototxt_file, dst, blob_name):
-  #txt = utils.read_text(prototxt_file)
-  #utils.write_text(dst, txt)
-  #return
+  txt = utils.read_text(prototxt_file)
+  utils.write_text(dst, txt)
+  return
   
   cmd = []
   cmd.append(PYTHON)
@@ -185,11 +148,9 @@ def postprocess_test_prototxt():
     elif layer.name == 'detection_eval':
       layer.detection_evaluate_param.name_size_file = '$#path_to_name_size#$'
 
-  # Serialize prototxt
-  txt = text_format.MessageToString(net)
-
   # We cant insert strings into integer field using caffe_pb2 
   # as it's type safe, so do it with plain string replacement
+  txt = text_format.MessageToString(net)
   txt = txt.replace('batch_size: 0', 'batch_size: $#val_batch_size#$')
   txt = txt.replace('num_test_image: 0', 'num_test_image: $#num_test_image#$')
 
@@ -197,16 +158,16 @@ def postprocess_test_prototxt():
 
 ########################################################################
 
-def postprocess_deploy_prototxt():
+def make_deploy_prototxt():
   net = caffe_pb2.NetParameter()
-  utils.read_prototxt(DST_DEPLOY_PROTOTXT_FILE, net)
+  utils.read_prototxt(DST_TEST_PROTOTXT_FILE, net)
   
-  # Remove dummy data layers
-  data_layers = []
+  # Remove first and last layers
+  layers_to_remove = []
   for layer in net.layer:
-    if layer.name == 'data':
-      data_layers.append(layer)
-  for layer in data_layers:
+    if layer.name == 'data' or layer.name == 'detection_eval':
+      layers_to_remove.append(layer)
+  for layer in layers_to_remove:
     net.layer.remove(layer)
 
   # Prepare standart input
@@ -217,16 +178,9 @@ def postprocess_deploy_prototxt():
   shape.dim.append(TARGET_IMG_H)
   shape.dim.append(TARGET_IMG_W)
 
-  for layer in net.layer:
-    if layer.name == 'detection_out':
-      p = layer.detection_output_param.save_output_param
-      p.label_map_file = '$#path_to_labelmap#$'
-
-  # Serialize prototxt
-  txt = text_format.MessageToString(net)
-
   # We can't insert strings into integer field using caffe_pb2 
   # as it's type safe, so do it with plain string replacement
+  txt = text_format.MessageToString(net)
   txt = txt.replace('dim: -1', 'dim: $#batch_size#$')
 
   utils.write_text(DST_DEPLOY_PROTOTXT_FILE, txt)
@@ -262,23 +216,16 @@ if __name__ == '__main__':
     make_lmdb()
 
     print('\nPreparing {} ...'.format(SRC_TEST_PROTOTXT_FILE))
-    #prepare_test_prototxt()
+    prepare_test_prototxt()
 
     print('\nConverting {} ...'.format(TMP_TEST_PROTOTXT_FILE))
-    #convert_prototxt(TMP_TEST_PROTOTXT_FILE, DST_TEST_PROTOTXT_FILE, 'detection_eval')
+    convert_prototxt(TMP_TEST_PROTOTXT_FILE, DST_TEST_PROTOTXT_FILE, 'detection_eval')
+
+    print('\Making {} ...'.format(DST_DEPLOY_PROTOTXT_FILE))
+    make_deploy_prototxt()
 
     print('\nPostprocessing {} ...'.format(DST_TEST_PROTOTXT_FILE))
-    #postprocess_test_prototxt()
-
-
-    print('\nPreparing {} ...'.format(SRC_DEPLOY_PROTOTXT_FILE))
-    prepare_deploy_prototxt()
-
-    print('\nConverting {} ...'.format(TMP_DEPLOY_PROTOTXT_FILE))
-    convert_prototxt(TMP_DEPLOY_PROTOTXT_FILE, DST_DEPLOY_PROTOTXT_FILE, 'detection_out')
-
-    print('\nPostprocessing {} ...'.format(DST_DEPLOY_PROTOTXT_FILE))
-    postprocess_deploy_prototxt()
+    postprocess_test_prototxt()
     
   finally:
     print('\nFinalizing...')
