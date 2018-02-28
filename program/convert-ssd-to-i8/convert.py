@@ -178,6 +178,18 @@ def make_deploy_prototxt():
   shape.dim.append(TARGET_IMG_H)
   shape.dim.append(TARGET_IMG_W)
 
+  # Not sure why there params should be removed,
+  # but they are not presented in deploy.prototxt from packages
+  # caffemodel-ssd-coco-* and caffemodel-ssd-voc-*
+  for layer in net.layer:
+    if layer.name == 'detection_out':
+      p = layer.detection_output_param.save_output_param
+      p.label_map_file = '$#path_to_labelmap#$'
+      p.output_name_prefix = ''
+      p.output_format = ''
+      p.name_size_file = ''
+      p.num_test_image = 0
+
   # We can't insert strings into integer field using caffe_pb2 
   # as it's type safe, so do it with plain string replacement
   txt = text_format.MessageToString(net)
