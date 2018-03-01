@@ -1,0 +1,87 @@
+{
+  "check_exit_status": "yes", 
+  "customize": {
+    "extra_dir": "",
+    "file_with_weights": "ResNet-50-model.caffemodel",
+    "file_mean_bin": "ResNet_mean.binaryproto",
+    "force_ask_path": "yes", 
+    "install_env": {
+      "DEPLOY_BATCH_SIZE": 1,
+      "DEPLOY_BLOB_NAME": "prob",
+      "DEPLOY_ITERATIONS": 4,
+      "TRAIN_VAL_BATCH_SIZE": 50,
+      "TRAIN_VAL_BLOB_NAME": "accuracy/top-1",
+      "TRAIN_VAL_ITERATIONS": 4,
+      "MODEL_IMAGE_SIZE": 224
+    }, 
+    "no_os_in_suggested_path": "yes", 
+    "no_ver_in_suggested_path": "no", 
+    "params": {
+      "val": {
+        "template": "train_val_quantized.prototxt",
+        "substitute":{
+          "val_batch_size": 50
+        },
+        "accuracy_layers": [ "accuracy/top-1", "accuracy/top-5", "prob" ]
+      },
+      "deploy": {
+        "substitute": {
+          "batch_size": 1
+        }, 
+        "template": "deploy_quantized.prototxt"
+      }
+    }, 
+    "skip_file_check": "yes", 
+    "version": "intel-i8"
+  }, 
+  "deps": {
+    "caffemodel": {
+      "local": "yes", 
+      "name": "ResNet-50", 
+      "sort": 20, 
+      "tags": "caffemodel,resnet50",
+      "no_tags": "vint8"
+    },
+    "dataset-imagenet-lmdb": {
+      "local": "yes", 
+      "name": "ImageNet dataset (lmdb)", 
+      "sort": 30, 
+      "tags": "dataset,imagenet,val-lmdb"
+    },
+    "lib-caffe": {
+      "local": "yes",
+      "name": "Intel Caffe",
+      "sort": 40,
+      "tags": "lib,caffe,intel"
+    }
+  }, 
+  "end_full_path": {
+    "linux": "train_val.prototxt"
+  }, 
+  "only_for_host_os_tags": [
+    "linux"
+  ], 
+  "only_for_target_os_tags": [
+    "linux"
+  ], 
+  "package_extra_name": " (resnet50, int8)", 
+  "process_script": "convert", 
+  "soft_uoa": "e2400aabc11d6cd1", 
+  "suggested_path": "caffemodel-resnet50", 
+  "tags": [
+    "caffe",
+    "weights",
+    "caffemodel",
+    "resnet",
+    "resnet50",
+    "channel-stable",
+    "intel",
+    "vint8",
+    "vi8"
+  ],
+  "use_scripts_from_another_entry": {
+    "data_uoa": "caffe2intel-i8", 
+    "module_uoa": "script", 
+    "repo_uoa": "ck-request-asplos18-caffe-intel"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "backup_data_uid": "c46f7789bd0b4a57", 
+  "backup_module_uid": "1dc07ee0f4742028", 
+  "backup_module_uoa": "package", 
+  "control": {
+    "engine": "CK", 
+    "iso_datetime": "2018-02-19T17:09:07.052452", 
+    "version": [
+      "1", 
+      "9", 
+      "3", 
+      "1"
+    ]
+  }, 
+  "data_name": "caffemodel-resnet50-intel-i8"
+}

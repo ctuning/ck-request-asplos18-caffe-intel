@@ -1,0 +1,16 @@
+{
+  "backup_data_uid": "f5b791d4322a2b87", 
+  "backup_module_uid": "84e27ad9dd12e734", 
+  "backup_module_uoa": "script", 
+  "control": {
+    "engine": "CK", 
+    "iso_datetime": "2018-02-19T17:29:47.918832", 
+    "version": [
+      "1", 
+      "9", 
+      "3", 
+      "1"
+    ]
+  }, 
+  "data_name": "caffe2intel-i8"
+}
