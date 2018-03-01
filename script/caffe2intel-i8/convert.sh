@@ -49,9 +49,9 @@ function ConvertPrototxt() {
   rm ${INSTALL_DIR}/${INPUT_PROTOTXT}
 }
 
-# This path should be a module to be able importing
-# from caffe.proto import caffe_pb2
-# as it's required in calibration.py script
+# At this path, there should be a module that can be imported.
+#   from caffe.proto import caffe_pb2
+# It's required in calibration.py script
 PYTHON_CAFFE_INIT_PY=${CK_ENV_LIB_CAFFE}/python/caffe/__init__.py
 if [ ! -f ${PYTHON_CAFFE_INIT_PY} ]; then
   PYTHON_CAFFE_INIT_PY_CREATED="YES"

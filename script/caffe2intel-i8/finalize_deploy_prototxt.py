@@ -34,7 +34,7 @@ if __name__ == '__main__':
   # Prepare standart input
   net.input.append('data')
   shape = net.input_shape.add()
-  shape.dim.append(-1)
+  shape.dim.append(0)
   shape.dim.append(3)
   shape.dim.append(int(os.getenv('MODEL_IMAGE_SIZE')))
   shape.dim.append(int(os.getenv('MODEL_IMAGE_SIZE')))
@@ -42,9 +42,9 @@ if __name__ == '__main__':
   # Serialize prototxt
   txt = text_format.MessageToString(net)
 
-  # We cant insert strings into integer field using caffe_pb2 
-  # as it's type safe, so do it with plain string replacement
-  txt = txt.replace('dim: -1', 'dim: $#batch_size#$')
+  # caffe_pb2 is type safe and does not allow to insert strings 
+  # into integer fields, so do it with plain string replacement
+  txt = txt.replace('dim: 0', 'dim: $#batch_size#$')
 
   with open(params.MODEL, 'w') as f:
     f.write(txt)

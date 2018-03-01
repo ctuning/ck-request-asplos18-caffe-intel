@@ -24,7 +24,7 @@ if __name__ == '__main__':
     text_format.Merge(f.read(), net)
 
   # Adjust input layer
-  # Currently it's supposed that there is only one input layer
+  # NB: Currently, we assume that there is only one input layer.
   for layer in net.layer:
     if layer.name == 'data':
       layer.transform_param.mean_file = '$#val_mean#$'
@@ -34,7 +34,7 @@ if __name__ == '__main__':
   # Serialize prototxt
   txt = text_format.MessageToString(net)
 
-  # We cant insert strings into integer field using caffe_pb2 
+  # We cannot insert strings into integer field using caffe_pb2 
   # as it's type safe, so do it with plain string replacement
   txt = txt.replace('batch_size: 0', 'batch_size: $#val_batch_size#$')
 
