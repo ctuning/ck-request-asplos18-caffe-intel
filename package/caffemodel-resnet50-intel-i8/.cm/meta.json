@@ -22,7 +22,7 @@
         "substitute":{
           "val_batch_size": 50
         },
-        "accuracy_layers": [ "accuracy/top-1", "accuracy/top-5", "fc1000" ]
+        "accuracy_layers": [ "accuracy/top-1", "accuracy/top-5", "prob" ]
       },
       "deploy": {
         "substitute": {
@@ -40,7 +40,7 @@
       "name": "ResNet-50", 
       "sort": 20, 
       "tags": "caffemodel,resnet50",
-      "no_tags": "intel"
+      "no_tags": "vint8"
     },
     "dataset-imagenet-lmdb": {
       "local": "yes", 
@@ -75,7 +75,9 @@
     "resnet",
     "resnet50",
     "channel-stable",
-    "intel"
+    "intel",
+    "vint8",
+    "vi8"
   ],
   "use_scripts_from_another_entry": {
     "data_uoa": "caffe2intel-i8", 

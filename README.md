@@ -17,25 +17,14 @@ $ ck pull repo:ck-request-asplos18-caffe-intel
 $ ck install package:lib-caffe-intel-request-cpu
 ```
 
-### Install Caffe models
-
-#### ResNet50
-
-```
-$ ck install package:caffemodel-resnet50
-``` 
-
-#### Inception v3
-
-**TODO**
-
-#### SSD
-
-```
-$ ck install package:caffemodel-ssd-voc-300 
-```
-
 ### Install ImageNet validation datasets
+
+**NB:** If you already have the ImageNet validation dataset downloaded, e.g. in
+`/data/ilsvrc2012_val/`, you can simply register it with CK as follows:
+
+```
+$ ck detect soft:dataset.imagenet.val --full_path=/data/ilsvrc2012_val/ILSVRC2012_val_00000001.JPEG
+```
 
 #### Reduced (500 images)
 ```
@@ -45,6 +34,27 @@ $ ck install package:imagenet-2012-val-min
 #### Full (50,000 images)
 ```
 $ ck install package:imagenet-2012-val
+```
+
+### Install Caffe models and resize ImageNet dataset
+
+#### ResNet50
+
+**NB:** ResNet uses the standard ImageNet mean file of resolution `256x256`, so the inputs must match that.
+
+```
+$ ck install package:imagenet-2012-val-lmdb-256
+$ ck install package:caffemodel-resnet50
+```
+
+#### Inception v3
+
+**TODO**
+
+#### SSD
+
+```
+$ ck install package:caffemodel-ssd-voc-300
 ```
 
 
