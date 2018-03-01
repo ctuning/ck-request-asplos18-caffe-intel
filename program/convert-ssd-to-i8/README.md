@@ -14,7 +14,7 @@ Caffe model to be converted into quantized format:
 ck install package --tags=caffemodel,ssd
 ```
 
-One of datasets COCO-2014 or VOC-2207 depending on wich model you want convert:
+One of datasets COCO-2014 or VOC-2007 depending on which model you wish to convert:
 ```
 ck install package:dataset-coco-2014
 ck install package:dataset-voc-2007
