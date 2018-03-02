@@ -97,6 +97,7 @@ def convert_prototxt():
   '''
   Converts f32 prototxt into quantized version using Intel's tool calibrator.py
   '''
+  #LMDB_IMAGE_COUNT=17125
   cmd = []
   cmd.append(PYTHON)
   cmd.append(os.path.join(CAFFE_DIR, '..', 'src', 'scripts', 'calibrator.py'))
@@ -157,7 +158,7 @@ def make_deploy_prototxt():
   # Prepare standart input
   net.input.append('data')
   shape = net.input_shape.add()
-  shape.dim.append(-1)
+  shape.dim.append(0)
   shape.dim.append(3)
   shape.dim.append(TARGET_IMG_H)
   shape.dim.append(TARGET_IMG_W)
@@ -177,7 +178,7 @@ def make_deploy_prototxt():
   # We can't insert strings into integer field using caffe_pb2 
   # as it's type safe, so do it with plain string replacement
   txt = text_format.MessageToString(net)
-  txt = txt.replace('dim: -1', 'dim: $#batch_size#$')
+  txt = txt.replace('dim: 0', 'dim: $#batch_size#$', 1)
 
   utils.write_text(DST_DEPLOY_PROTOTXT_FILE, txt)
 
