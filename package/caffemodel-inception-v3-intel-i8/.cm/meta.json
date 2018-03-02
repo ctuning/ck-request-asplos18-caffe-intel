@@ -1,0 +1,86 @@
+{
+  "check_exit_status": "yes", 
+  "customize": {
+    "extra_dir": "", 
+    "file_mean_bin": "inceptionv3_mean.binaryproto", 
+    "file_with_weights": "inceptionv3.caffemodel", 
+    "force_ask_path": "yes", 
+    "install_env": {
+      "DEPLOY_BATCH_SIZE": 1, 
+      "DEPLOY_BLOB_NAME": "prob", 
+      "DEPLOY_ITERATIONS": 4, 
+      "MODEL_IMAGE_SIZE": 320, 
+      "TRAIN_VAL_BATCH_SIZE": 64, 
+      "TRAIN_VAL_BLOB_NAME": "acc/top-1", 
+      "TRAIN_VAL_ITERATIONS": 4
+    }, 
+    "no_os_in_suggested_path": "yes", 
+    "no_ver_in_suggested_path": "no", 
+    "params": {
+      "deploy": {
+        "substitute": {
+          "batch_size": 1
+        }, 
+        "template": "deploy_quantized.prototxt"
+      }, 
+      "val": {
+        "accuracy_layers": [ "acc/top-1", "acc/top-5", "loss" ], 
+        "substitute": {
+          "val_batch_size": 50
+        }, 
+        "template": "train_val_quantized.prototxt"
+      }
+    }, 
+    "skip_file_check": "yes", 
+    "version": "intel-i8"
+  }, 
+  "deps": {
+    "caffemodel": {
+      "local": "yes", 
+      "name": "Inception-V3", 
+      "sort": 20, 
+      "tags": "caffemodel,inception-v3",
+      "no_tags": "vint8"
+    }, 
+    "dataset-imagenet-lmdb": {
+      "local": "yes", 
+      "name": "ImageNet dataset (lmdb)", 
+      "sort": 30, 
+      "tags": "dataset,imagenet,val-lmdb"
+    }, 
+    "lib-caffe": {
+      "local": "yes", 
+      "name": "Intel Caffe", 
+      "sort": 40, 
+      "tags": "lib,caffe,intel"
+    }
+  }, 
+  "end_full_path": {
+    "linux": "train_val.prototxt"
+  }, 
+  "only_for_host_os_tags": [
+    "linux"
+  ], 
+  "only_for_target_os_tags": [
+    "linux"
+  ], 
+  "package_extra_name": " (inception-v3, int8)", 
+  "process_script": "convert", 
+  "soft_uoa": "e2400aabc11d6cd1", 
+  "suggested_path": "caffemodel-inceptionv-v3", 
+  "tags": [
+    "caffe", 
+    "weights", 
+    "caffemodel", 
+    "inception", 
+    "inception-v3", 
+    "channel-stable", 
+    "vint8",
+    "intel"
+  ], 
+  "use_scripts_from_another_entry": {
+    "data_uoa": "caffe2intel-i8", 
+    "module_uoa": "script", 
+    "repo_uoa": "ck-request-asplos18-caffe-intel"
+  }
+}

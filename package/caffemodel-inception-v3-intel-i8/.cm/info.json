@@ -1,0 +1,16 @@
+{
+  "backup_data_uid": "722a6cd28d64d3db", 
+  "backup_module_uid": "1dc07ee0f4742028", 
+  "backup_module_uoa": "package", 
+  "control": {
+    "engine": "CK", 
+    "iso_datetime": "2018-02-21T19:49:10.504049", 
+    "version": [
+      "1", 
+      "9", 
+      "1", 
+      "1"
+    ]
+  }, 
+  "data_name": "caffemodel-inception-v3-intel-i8"
+}
