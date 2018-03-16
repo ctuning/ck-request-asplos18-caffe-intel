@@ -39,9 +39,7 @@ $ ck install package:imagenet-2012-val
 
 ### Install Caffe models and resize ImageNet dataset
 
-
-**NB:** If you already have the ImageNet validation dataset resized, e.g. in `/datasets/dataset-imagenet-ilsvrc2012-val-lmdb-dataset.imagenet.val-ilsvrc2012_val_full-resize-320/data/data.mdb`,
-you can register it with CK as follows:
+**NB:** If you already have the ImageNet validation dataset resized as an LMDB file, e.g. in `/datasets/dataset-imagenet-ilsvrc2012-val-lmdb-dataset.imagenet.val-ilsvrc2012_val_full-resize-320/data/data.mdb`, you can register it with CK as follows:
 
 ````
 $ ck detect soft:dataset.imagenet.val.lmdb \
@@ -50,16 +48,23 @@ $ ck detect soft:dataset.imagenet.val.lmdb \
 
 #### ResNet50
 
-**NB:** ResNet uses the standard ImageNet mean file of resolution `256x256`, so the inputs must match that.
+**NB:** ResNet50 uses the standard ImageNet mean file of resolution `256x256`, so the inputs must match that.
 
 ```
-$ ck install package:imagenet-2012-val-lmdb-256
-$ ck install package:caffemodel-resnet50
+$ ck install ck-caffe:package:imagenet-2012-val-lmdb-256
+$ ck install ck-caffe:package:caffemodel-resnet50
+$ ck install ck-request-asplos18-caffe-intel:package:caffemodel-resnet50-intel-i8
 ```
 
-#### Inception v3
+#### Inception-v3
 
-**TODO**
+**NB:** Inception-v3 uses an ImageNet mean file of resolution `320x320`, so the inputs must match that.
+
+```
+$ ck install ck-caffe:package:imagenet-2012-val-lmdb-320
+$ ck install ck-caffe:package:caffemodel-inception-v3
+$ ck install ck-request-asplos18-caffe-intel:package:caffemodel-inception-v3-intel-i8
+```
 
 #### SSD
 
