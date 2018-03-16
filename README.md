@@ -41,7 +41,7 @@ $ ck install package:imagenet-2012-val
 
 **NB:** If you already have the ImageNet validation dataset resized as an LMDB file, e.g. in `/datasets/dataset-imagenet-ilsvrc2012-val-lmdb-dataset.imagenet.val-ilsvrc2012_val_full-resize-320/data/data.mdb`, you can register it with CK as follows:
 
-````
+```
 $ ck detect soft:dataset.imagenet.val.lmdb \
 --full_path=/datasets/dataset-imagenet-ilsvrc2012-val-lmdb-dataset.imagenet.val-ilsvrc2012_val_full-resize-320/data/data.mdb
 ```
