@@ -64,10 +64,10 @@
   "only_for_target_os_tags": [
     "linux"
   ], 
-  "package_extra_name": " (inception-v3, int8)", 
+  "package_extra_name": " (inception-v3, int8)",
   "process_script": "convert", 
   "soft_uoa": "e2400aabc11d6cd1", 
-  "suggested_path": "caffemodel-inceptionv-v3", 
+  "suggested_path": "caffemodel-inception-v3",
   "tags": [
     "caffe", 
     "weights", 
