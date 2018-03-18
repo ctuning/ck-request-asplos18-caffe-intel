@@ -17,7 +17,7 @@ function ConvertPrototxt() {
   THIS_SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
   echo
-  echo "Convertion ${INPUT_PROTOTXT} ..."
+  echo "Converting ${INPUT_PROTOTXT} ..."
   echo
 
   if [ -f ${INSTALL_DIR}/${INPUT_PROTOTXT} ]; then
@@ -51,11 +51,13 @@ function ConvertPrototxt() {
 
 # At this path, there should be a module that can be imported.
 #   from caffe.proto import caffe_pb2
-# It's required in calibration.py script
+# This is required in the calibration.py script.
 PYTHON_CAFFE_INIT_PY=${CK_ENV_LIB_CAFFE}/python/caffe/__init__.py
 if [ ! -f ${PYTHON_CAFFE_INIT_PY} ]; then
   PYTHON_CAFFE_INIT_PY_CREATED="YES"
   echo '' > ${PYTHON_CAFFE_INIT_PY}
+else
+  PYTHON_CAFFE_INIT_PY_CREATED="NO"
 fi
 
 ConvertPrototxt 'train_val' ${TRAIN_VAL_BLOB_NAME} ${TRAIN_VAL_ITERATIONS}
