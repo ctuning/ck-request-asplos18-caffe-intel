@@ -48,10 +48,10 @@ $ ck detect soft:dataset.imagenet.val.lmdb \
 
 #### ResNet50
 
-**NB:** ResNet50 uses the standard ImageNet mean file of resolution `256x256`, so the inputs must match that.
+**NB:** ResNet50 uses an ImageNet mean file of resolution `224x224`, so the inputs must match that.
 
 ```
-$ ck install ck-caffe:package:imagenet-2012-val-lmdb-256
+$ ck install ck-caffe:package:imagenet-2012-val-lmdb-224
 $ ck install ck-caffe:package:caffemodel-resnet50
 $ ck install ck-request-asplos18-caffe-intel:package:caffemodel-resnet50-intel-i8
 ```
@@ -75,6 +75,11 @@ $ ck install package:caffemodel-ssd-voc-300
 
 ## Usage instructions
 
+### Measure accuracy
+```
+$ ck run program:caffe --cmd_key=test_cpu
+```
+
 ### Measure latency
 ```
 $ ck run program:caffe --cmd_key=time_cpu --env.CK_CAFFE_BATCH_SIZE=1
@@ -85,7 +90,15 @@ $ ck run program:caffe --cmd_key=time_cpu --env.CK_CAFFE_BATCH_SIZE=1
 $ ck run program:caffe --cmd_key=time_cpu --env.CK_CAFFE_BATCH_SIZE=64
 ```
 
-### Measure accuracy
+### Explore performance
+
+Explore how the execution time is affected by changing:
+- [`nt`] the number of OpenMP threads (e.g. from 1 to 20 on a 10-core machine with hyperthreading);
+- [`bs`] the batch size (e.g. from 1 to 64).
+
+**NB:** You may want to change the `bs` and `nt` space exploration parameters, as well as
+`platform_tags` in the `benchmarking.py` script before launching it as follows:
+
 ```
-$ ck run program:caffe --cmd_key=test_cpu
+$ python `ck find script:explore-batch-size-openmp-threads`/benchmarking.py
 ```
