@@ -11,7 +11,7 @@ platform_tags='xeon-e5-2650-v3'
 # Batch size.
 bs={
   'start':1,
-  'stop':64,
+  'stop':16,
   'step':1,
   'default':1
 }
@@ -282,7 +282,7 @@ def do(i, arg):
                 'record_repo':record_repo,
                 'record_uoa':record_uoa,
 
-                'tags':[ 'explore-batch-size-openmp-threads', program, model_tags, lib_tags, platform_tags ],
+                'tags':[ 'explore-batch-size-openmp-threads', 'exhaustive', program, model_tags, lib_tags, platform_tags ],
 
                 'pipeline':cpipeline,
                 'out':'con'}
