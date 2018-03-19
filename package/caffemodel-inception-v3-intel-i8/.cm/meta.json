@@ -46,7 +46,7 @@
       "local": "yes", 
       "name": "ImageNet dataset (lmdb)", 
       "sort": 30, 
-      "tags": "dataset,imagenet,val-lmdb"
+      "tags": "dataset,imagenet,val-lmdb,resize-320"
     }, 
     "lib-caffe": {
       "local": "yes", 
