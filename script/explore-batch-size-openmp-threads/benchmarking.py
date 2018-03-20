@@ -5,13 +5,28 @@ import re
 import argparse
 
 
+# ReQuEST description.
+request_dict={
+  'report_uid':'e7cc77d72f13441e', # unique UID for a given ReQuEST submission generated manually by user (ck uid)
+                                   # the same UID will be for the report (in the same repo)
+
+  'repo_uoa':'ck-request-asplos18-caffe-intel',
+  'repo_uid':'0e40b194adc51b5a',
+
+  'repo_cmd':'ck pull repo:ck-request-asplos18-caffe-intel',
+
+  'farm':'', # if farm of machines
+
+  'algorithm_species':'4b8bbc192ec57f63' # image classification
+}
+
 # Platform tags.
 platform_tags='xeon-e5-2650-v3'
 
 # Batch size.
 # NB: This script uses the choice list.
 bs={
-  'choice':[1, 8, 16, 24, 32, 40, 48, 56, 64],
+  'choice':[1, 8], #, 16, 24, 32, 40, 48, 56, 64],
   'start':1,
   'stop':16,
   'step':1,
@@ -30,14 +45,19 @@ nt={
 # Number of statistical repetitions.
 num_repetitions=5
 
-
 def do(i, arg):
+
+    random_name = arg.random_name
+
     # Detect basic platform info.
     ii={'action':'detect',
         'module_uoa':'platform',
         'out':'out'}
     r=ck.access(ii)
     if r['return']>0: return r
+
+    # Keep to prepare ReQuEST meta.
+    platform_dict=copy.deepcopy(r)
 
     # Host and target OS params.
     hos=r['host_os_uoa']
@@ -251,6 +271,34 @@ def do(i, arg):
 
             cpipeline['cmd_key']=cmd_key
 
+            # Prepare common meta for ReQuEST tournament
+            features=copy.deepcopy(cpipeline['features'])
+            platform_dict['features'].update(features)
+
+            r=ck.access({'action':'prepare_common_meta',
+                         'module_uoa':'request.asplos18',
+                         'platform_dict':platform_dict,
+                         'deps':cpipeline['dependencies'],
+                         'request_dict':request_dict})
+            if r['return']>0: return r
+
+            record_dict=r['record_dict']
+
+            meta=r['meta']
+
+            if random_name:
+               rx=ck.gen_uid({})
+               if rx['return']>0: return rx
+               record_uoa=rx['data_uid']
+
+            tags=r['tags']
+
+            tags.append('explore-batch-size-openmp-threads')
+            tags.append(program)
+            tags.append(model_tags)
+            tags.append(lib_tags)
+            tags.append(platform_tags)
+
             ii={'action':'autotune',
 
                 'module_uoa':'pipeline',
@@ -282,10 +330,14 @@ def do(i, arg):
                 'record_params':{
                     'search_point_by_features':'yes'
                 },
+
+                'tags':tags,
+                'meta':meta,
+
+                'record_dict':record_dict,
+
                 'record_repo':record_repo,
                 'record_uoa':record_uoa,
-
-                'tags':[ 'explore-batch-size-openmp-threads', 'exhaustive', program, model_tags, lib_tags, platform_tags ],
 
                 'pipeline':cpipeline,
                 'out':'con'}
@@ -301,11 +353,13 @@ def do(i, arg):
 
     return {'return':0}
 
+##############################################################################################
+
 parser = argparse.ArgumentParser(description='Pipeline')
 parser.add_argument("--target_os", action="store", dest="tos")
 parser.add_argument("--device_id", action="store", dest="did")
+parser.add_argument("--random_name", action="store_true", default=False, dest="random_name")
 myarg=parser.parse_args()
-
 
 r=do({}, myarg)
 if r['return']>0: ck.err(r)
