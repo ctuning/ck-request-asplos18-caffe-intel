@@ -26,7 +26,7 @@ platform_tags='xeon-e5-2650-v3'
 # Batch size.
 # NB: This script uses the choice list.
 bs={
-  'choice':[1, 8], #, 16, 24, 32, 40, 48, 56, 64],
+  'choice':[1, 8, 16, 24, 32, 40, 48, 56, 64],
   'start':1,
   'stop':16,
   'step':1,
@@ -217,6 +217,8 @@ def do(i, arg):
         lib_tags=re.match('BVLC Caffe framework \((?P<tags>.*)\)', lib_name)
         lib_tags=lib_tags.group('tags').replace(' ', '').replace(',', '-')
         # Skip some libs with "in [..]" or "not in [..]".
+
+        # Remark next one if you want to check other libs
         if lib_tags not in [ 'intel-request' ]: continue
 
         skip_compile='no'
@@ -237,7 +239,7 @@ def do(i, arg):
             if model_tags not in [ 'resnet50-fp32', 'resnet50-int8', 'inception-v3-fp32', 'inception-v3-int8' ]: continue
 
             record_repo='local'
-            record_uoa=platform_tags+'.'+lib_tags+'.'+model_tags
+            record_uoa='ck-request-asplos18-caffe-intel-performance-'+platform_tags+'.'+lib_tags+'.'+model_tags
 
             # Prepare pipeline.
             ck.out('---------------------------------------------------------------------------------------')
