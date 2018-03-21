@@ -206,20 +206,33 @@ def do(i, arg):
 
     # For each Caffe lib.*******************************************************
     for lib_uoa in udepl:
+#    for lib_uoa in ["8481da9f14850506"]:
         # Load Caffe lib.
         ii={'action':'load',
             'module_uoa':'env',
             'data_uoa':lib_uoa}
         r=ck.access(ii)
         if r['return']>0: return r
+
         # Get the tags from e.g. 'BVLC Caffe framework (intel, request)'
         lib_name=r['data_name']
         lib_tags=re.match('BVLC Caffe framework \((?P<tags>.*)\)', lib_name)
         lib_tags=lib_tags.group('tags').replace(' ', '').replace(',', '-')
         # Skip some libs with "in [..]" or "not in [..]".
 
+        # ReQuEST CUDA/CUDNN
+        rtags=r['dict'].get('tags',[])
+        if 'vcuda' in rtags:
+           # Detect gpgpu
+           r=ck.access({'action':'detect',
+                        'module_uoa':'platform.gpgpu',
+                        'cuda':'yes',
+                        'select':'yes'})
+           if r['return']>0: return r
+           platform_dict['features'].update(r['features'])
+
         # Remark next one if you want to check other libs
-        if lib_tags not in [ 'intel-request' ]: continue
+#        if lib_tags not in [ 'intel-request' ]: continue
 
         skip_compile='no'
 
