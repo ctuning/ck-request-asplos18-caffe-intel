@@ -9,7 +9,7 @@
       "DEPLOY_BATCH_SIZE": 1, 
       "DEPLOY_BLOB_NAME": "prob", 
       "DEPLOY_ITERATIONS": 4, 
-      "MODEL_IMAGE_SIZE": 320, 
+      "MODEL_IMAGE_SIZE": 299, 
       "TRAIN_VAL_BATCH_SIZE": 64, 
       "TRAIN_VAL_BLOB_NAME": "acc/top-1", 
       "TRAIN_VAL_ITERATIONS": 4
