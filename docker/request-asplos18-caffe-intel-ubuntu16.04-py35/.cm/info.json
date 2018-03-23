@@ -1,14 +1,14 @@
 {
-  "backup_data_uid": "e7cc77d72f13441e",
-  "backup_module_uid": "1e348bd6ab43ce8a",
-  "backup_module_uoa": "report",
+  "backup_data_uid": "b16c928db4ae3bbf",
+  "backup_module_uid": "88eef0cd8c43b68a",
+  "backup_module_uoa": "docker",
   "control": {
     "author": "Grigori Fursin",
     "author_email": "Grigori.Fursin@cTuning.org",
     "author_webpage": "http://fursin.net",
     "copyright": "See CK COPYRIGHT.txt for copyright details",
     "engine": "CK",
-    "iso_datetime": "2018-02-20T12:47:43.811319",
+    "iso_datetime": "2018-03-22T18:33:04.460848",
     "license": "See CK LICENSE.txt for licensing details",
     "version": [
       "1",
@@ -16,5 +16,6 @@
       "4",
       "1"
     ]
-  }
+  },
+  "data_name": "request-asplos18-caffe-intel-ubuntu16.04-py35"
 }

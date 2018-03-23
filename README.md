@@ -1,8 +1,52 @@
-# Collective Knowledge workflow for the Intel Caffe submission to [ReQuEST @ ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html)
+# Collective Knowledge workflow for image classification submitted to [ReQuEST at ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html)
 
-- [Authors' instructions](https://github.com/intel/caffe/wiki/ReQuEST-Artifact-Installation-Guide)
+* **Title:** Highly Efficient 8-bit Low Precision Inference of Convolutional Neural Networks with IntelCaffe
+* **Authors:** Jiong Gong, Haihao Shen, Guoming Zhang, Xiaoli Liu, Shane Li, Ge Jin, Niharika Maheshwari
+
+## Artifact check-list (meta-information)
+
+We use the standard [Artifact Description check-list](http://ctuning.org/ae/submission_extra.html) from systems conferences including CGO, PPoPP, PACT and SuperComputing.
+
+* **Algorithm:** image classification
+* **Program:** 
+* **Compilation:** Intel C++ Compiler 17.0.5 20170817
+* **Transformations:**
+* **Binary:** will be compiled on a target platform
+* **Data set:** ImageNet 2012 validation (50,000 images)
+* **Run-time environment:** 
+```
+KMP HW SUBSET=1T
+KMP AFFINITY=granularity=fine,compact
+OMP NUM THREADS=18
+```
+* **Hardware:** single socket (18 cores) on c5.18xlarge
+* **Run-time state:** 
+* **Execution:**
+* **Metrics:** 
+```
+Throughput: images per second.
+Latency: milli-second.
+Accuracy: % top-1/top-5/mAP.
+```
+* **Output:** classification result; execution time; accuracy
+* **Experiments:** 
+
+```
+We use batch size 64, 64, and 32 to measure the
+throughput for ResNet-50, Inception-V3, and SSD respectively.
+We use batch size 1 to measure the latency.
+```
+
+* **How much disk space required (approximately)?** 
+* **How much time is needed to prepare workflow (approximately)?** 
+* **How much time is needed to complete experiments (approximately)?**
+* **Collective Knowledge workflow framework used?** Yes
+* **Publicly available?:** Yes
+* **Experimental results:** https://github.com/ctuning/ck-request-asplos18-results-caffe-intel
 
 ## Installation instructions
+
+- [Authors' instructions](https://github.com/intel/caffe/wiki/ReQuEST-Artifact-Installation-Guide)
 
 ### Install Collective Knowledge
 
@@ -80,6 +124,11 @@ $ ck install package:caffemodel-ssd-voc-300
 $ ck run program:caffe --cmd_key=test_cpu
 ```
 
+Results:
+- https://github.com/ctuning/ck-request-asplos18-caffe-intel/issues/7#issuecomment-374265425
+- https://github.com/ctuning/ck-request-asplos18-caffe-intel/issues/9#issuecomment-374268187
+
+
 ### Measure latency
 ```
 $ ck run program:caffe --cmd_key=time_cpu --env.CK_CAFFE_BATCH_SIZE=1
@@ -102,3 +151,18 @@ Explore how the execution time is affected by changing:
 ```
 $ python `ck find script:explore-batch-size-openmp-threads`/benchmarking.py
 ```
+
+## Unify output and add extra dimensions
+
+Scripts to unify all experiments and add extra dimensions in ReQuEST format for further comparison and visualization are available in the following entry:
+```
+$ cd `ck find ck-request-asplos18-caffe-intel:script:explore-batch-size-openmp-threads`
+```
+
+- benchmark-merge-performance-with-accuracy.py - merges performance entries with accuracy
+- benchmark-add-dimensions.py - adds extra dimensions
+
+CPU price is taken from [here](https://ark.intel.com/products/81705/Intel-Xeon-Processor-E5-2650-v3-25M-Cache-2_30-GHz).
+
+All updated experimental results are then moved to [ck-request-asplos18-results-caffe-intel repository](https://github.com/ctuning/ck-request-asplos18-results-caffe-intel).
+The best configurations are also moved to [ck-request-asplos18-results repo](https://github.com/ctuning/ck-request-asplos18-results).
