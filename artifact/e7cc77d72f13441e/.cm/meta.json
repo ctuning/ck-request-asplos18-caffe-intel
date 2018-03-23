@@ -1,0 +1,16 @@
+{
+  "acm_badges":{
+    "available":"yes",
+    "functional":"yes",
+    "reusable":"yes",
+    "replicated":"yes",
+    "reproduced":""
+  },
+  "dois": [
+  ],
+  "html":"",
+  "repos": [
+    {"name":"CK workflow", "url":"https://github.com/ctuning/ck-request-asplos18-caffe-intel"},
+    {"name":"CK results", "url":"https://github.com/ctuning/ck-request-asplos18-results-caffe-intel"}
+  ]
+}
