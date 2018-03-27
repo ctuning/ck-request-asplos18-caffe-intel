@@ -45,7 +45,6 @@ def do(i):
 
         # Search matching accuracy entry (if intel-request)
         x='ck-request-asplos18-caffe-intel-accuracy.*.'+model+'-'+prec
-        print (x)
         r=ck.access({'action':'search',
                      'module_uoa':'experiment',
                      'data_uoa':x,

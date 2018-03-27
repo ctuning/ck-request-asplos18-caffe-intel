@@ -7,6 +7,7 @@ def do(i):
     # List performance entries
     r=ck.access({'action':'search',
                  'module_uoa':'experiment',
+#                 'repo_uoa':'local',
 #                 'repo_uoa':'ck-request-asplos18-results'})
                  'data_uoa':'ck-request-asplos18-caffe-intel-performance-*'})
     if r['return']>0: return r
@@ -133,22 +134,24 @@ def do(i):
                d=r['dict']
 
                # Unify execution time + batch size
-               batch=int(d.get('##characteristics#run#REAL_ENV_CK_CAFFE_BATCH_SIZE#min',''))
-               d['##features#batch_size#min']=batch
+               x=d.get('##characteristics#run#REAL_ENV_CK_CAFFE_BATCH_SIZE#min','')
+               if x!=None and x!='':
+                  batch=int(x)
+                  d['##features#batch_size#min']=batch
 
-               tall=d.get('##characteristics#run#time_fw_s#all',[])
+                  tall=d.get('##characteristics#run#time_fw_s#all',[])
 
-               tnew=[]
-               for t in tall:
-                   t1=t/batch
-                   tnew.append(t1)
-               
-               r=ck.access({'action':'stat_analysis',
-                            'module_uoa':'experiment',
-                            'dict':d,
-                            'dict1':{'##characteristics#run#prediction_time_avg_s':tnew}
-                           })
-               if r['return']>0: return r
+                  tnew=[]
+                  for t in tall:
+                      t1=t/batch
+                      tnew.append(t1)
+                  
+                  r=ck.access({'action':'stat_analysis',
+                               'module_uoa':'experiment',
+                               'dict':d,
+                               'dict1':{'##characteristics#run#prediction_time_avg_s':tnew}
+                              })
+                  if r['return']>0: return r
 
                d['##features#model_size#min']=model_size
 
