@@ -206,7 +206,9 @@ def do(i, arg):
 
     # For each Caffe lib.*******************************************************
     for lib_uoa in udepl:
-#    for lib_uoa in ["8481da9f14850506"]:
+#        if lib_uoa=='a5e0d946008ad6c0': continue
+#        if lib_uoa!='8481da9f14850506': continue
+
         # Load Caffe lib.
         ii={'action':'load',
             'module_uoa':'env',
@@ -214,13 +216,38 @@ def do(i, arg):
         r=ck.access(ii)
         if r['return']>0: return r
 
+        real_tags=r['dict']['tags']
+
         # Get the tags from e.g. 'BVLC Caffe framework (intel, request)'
         lib_name=r['data_name']
         lib_tags=re.match('BVLC Caffe framework \((?P<tags>.*)\)', lib_name)
         lib_tags=lib_tags.group('tags').replace(' ', '').replace(',', '-')
         # Skip some libs with "in [..]" or "not in [..]".
 
+        # Check if Intel artifact and select OpenMP tuning
+        tuning_dims={
+                'choices_order':[
+                    ['##choices#env#CK_CAFFE_BATCH_SIZE']
+                ],
+                'choices_selection':[
+                    {'type':'loop', 'default':bs['default'], 'choice':bs['choice']}
+                ],
+                'features_keys_to_process':[
+                    '##choices#env#CK_CAFFE_BATCH_SIZE'
+                ]
+        }
+
+        intel_artifact=False
+        if 'intel' in real_tags and 'vrequest' in real_tags:
+           intel_artifact=True
+
+           # Add extra tuning dimension (OpenMP)
+           tuning_dims['choices_order'].append(['##choices#env#OMP_NUM_THREADS'])
+           tuning_dims['choices_selection'].append({'type':'loop', 'default':nt['default'], 'start':nt['start'], 'stop':nt['stop'], 'step':nt['step']})
+           tuning_dims['features_keys_to_process'].append('##choices#env#OMP_NUM_THREADS')
+
         # ReQuEST CUDA/CUDNN
+        cuda=False
         rtags=r['dict'].get('tags',[])
         if 'vcuda' in rtags:
            # Detect gpgpu
@@ -229,7 +256,14 @@ def do(i, arg):
                         'cuda':'yes',
                         'select':'yes'})
            if r['return']>0: return r
+
            platform_dict['features'].update(r['features'])
+
+           cuda=True
+
+        # Check proper command line for CPU or GPU
+        cmd_key='time_cpu'
+        if cuda: cmd_key='time_gpu'
 
         # Remark next one if you want to check other libs
 #        if lib_tags not in [ 'intel-request' ]: continue
@@ -244,10 +278,17 @@ def do(i, arg):
                 'data_uoa':model_uoa}
             r=ck.access(ii)
             if r['return']>0: return r
+
+            model_real_tags=r['dict']['tags']
+
+            if 'vint8' in model_real_tags and not intel_artifact:
+               continue
+
             # Get the tags from e.g. 'Caffe model (net and weights) (inception-v3, fp32)'
             model_name=r['data_name']
             model_tags = re.match('Caffe model \(net and weights\) \((?P<tags>.*)\)', model_name)
             model_tags = model_tags.group('tags').replace(' ', '').replace(',', '-')
+
             # Skip some models with "in [..]" or "not in [..]".
             if model_tags not in [ 'resnet50-fp32', 'resnet50-int8', 'inception-v3-fp32', 'inception-v3-int8' ]: continue
 
@@ -319,24 +360,6 @@ def do(i, arg):
                 'module_uoa':'pipeline',
                 'data_uoa':'program',
 
-                'choices_order':[
-                    [
-                        '##choices#env#CK_CAFFE_BATCH_SIZE'
-                    ],
-                    [
-                        '##choices#env#OMP_NUM_THREADS'
-                    ]
-                ],
-                'choices_selection':[
-                    {'type':'loop', 'default':bs['default'], 'choice':bs['choice']},
-                    {'type':'loop', 'default':nt['default'], 'start':nt['start'], 'stop':nt['stop'], 'step':nt['step']}
-                ],
-
-                'features_keys_to_process':[
-                    '##choices#env#CK_CAFFE_BATCH_SIZE',
-                    '##choices#env#OMP_NUM_THREADS'
-                ],
-
                 'iterations':-1,
                 'repetitions':num_repetitions,
 
@@ -356,6 +379,8 @@ def do(i, arg):
 
                 'pipeline':cpipeline,
                 'out':'con'}
+
+            ii.update(tuning_dims)
 
             r=ck.access(ii)
             if r['return']>0: return r
