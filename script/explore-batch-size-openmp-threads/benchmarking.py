@@ -27,9 +27,6 @@ platform_tags='xeon-e5-2650-v3'
 # NB: This script uses the choice list.
 bs={
   'choice':[1, 8, 16, 24, 32, 40, 48, 56, 64],
-  'start':1,
-  'stop':16,
-  'step':1,
   'default':1
 }
 
@@ -206,9 +203,6 @@ def do(i, arg):
 
     # For each Caffe lib.*******************************************************
     for lib_uoa in udepl:
-#        if lib_uoa=='a5e0d946008ad6c0': continue
-#        if lib_uoa!='8481da9f14850506': continue
-
         # Load Caffe lib.
         ii={'action':'load',
             'module_uoa':'env',
@@ -380,7 +374,7 @@ def do(i, arg):
                 'pipeline':cpipeline,
                 'out':'con'}
 
-            ii.update(tuning_dims)
+            ii.update(copy.deepcopy(tuning_dims))
 
             r=ck.access(ii)
             if r['return']>0: return r
