@@ -21,7 +21,7 @@ request_dict={
 }
 
 # Platform tags.
-platform_tags='xeon-e5-2650-v3'
+platform_tags='xeon-e5-2650-v3-icc'
 
 # Batch size.
 # NB: This script uses the choice list.
@@ -320,6 +320,8 @@ def do(i, arg):
             cpipeline['no_compile']=skip_compile
 
             cpipeline['cmd_key']=cmd_key
+
+            cpipeline['extra_run_cmd']='-phase TEST'
 
             # Prepare common meta for ReQuEST tournament
             features=copy.deepcopy(cpipeline['features'])
