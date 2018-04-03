@@ -15,7 +15,7 @@ request_dict={
 
   'repo_cmd':'ck pull repo:ck-request-asplos18-caffe-intel',
 
-  'farm':'AWS EC2', # if farm of machines
+  'farm':'Amazon', # if farm of machines
 
   'algorithm_species':'4b8bbc192ec57f63' # image classification
 }
@@ -31,12 +31,10 @@ bs={
 }
 
 # Number of OpenMP threads.
-# NB: Test the number of cores (10) and hyperthreads (20).
+# NB: Test the number of cores (36) and hyperthreads (72).
 nt={
-  'start':10,
-  'stop':20,
-  'step':10,
-  'default':1
+  'choice':[18,36,54,72],
+  'default':18
 }
 
 # Number of statistical repetitions.
@@ -212,6 +210,8 @@ def do(i, arg):
 
         real_tags=r['dict']['tags']
 
+#        if 'vrequest' in real_tags: continue
+
         # Get the tags from e.g. 'BVLC Caffe framework (intel, request)'
         lib_name=r['data_name']
         lib_tags=re.match('BVLC Caffe framework \((?P<tags>.*)\)', lib_name)
@@ -237,7 +237,7 @@ def do(i, arg):
 
            # Add extra tuning dimension (OpenMP)
            tuning_dims['choices_order'].append(['##choices#env#OMP_NUM_THREADS'])
-           tuning_dims['choices_selection'].append({'type':'loop', 'default':nt['default'], 'start':nt['start'], 'stop':nt['stop'], 'step':nt['step']})
+           tuning_dims['choices_selection'].append({'type':'loop', 'default':nt['default'], 'choice':nt['choice']})
            tuning_dims['features_keys_to_process'].append('##choices#env#OMP_NUM_THREADS')
 
         # ReQuEST CUDA/CUDNN
