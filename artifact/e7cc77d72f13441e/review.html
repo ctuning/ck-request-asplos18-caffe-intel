@@ -1,1 +1,9 @@
--phase TEST
+Note that just like in original paper, we added "-phase TEST" to command line when running Caffe tests, i.e.:
+
+<pre>
+ $ ck run program:caffe --extra_run_cmd="-phase TEST"
+</pre>
+
+This slightly changes results in comparison with executions when this extra flag is ommitted.
+Also, only with this flag the difference between Caffe Intel fp32 and int8 is visible on 
+Intel Xeon Platinum 8124M Processor. Hence extra validation for real inference speed may be useful!

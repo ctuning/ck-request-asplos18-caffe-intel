@@ -21,7 +21,7 @@ request_dict={
 }
 
 # Platform tags.
-platform_tags='xeon-2673-azure-d4.v2-gcc'
+platform_tags='xeon-2673-azure-d4.v2-icc'
 
 # Batch size.
 # NB: This script uses the choice list.
@@ -201,8 +201,6 @@ def do(i, arg):
 
     # For each Caffe lib.*******************************************************
     for lib_uoa in udepl:
-        if lib_uoa=='dd1b40f47dc8381d': continue
-
         # Load Caffe lib.
         ii={'action':'load',
             'module_uoa':'env',
@@ -262,7 +260,7 @@ def do(i, arg):
         if cuda: cmd_key='time_gpu'
 
         # Remark next one if you want to check other libs
-        if lib_tags in [ 'intel-request' ]: continue
+#        if lib_tags in [ 'intel-request' ]: continue
 
         skip_compile='no'
 

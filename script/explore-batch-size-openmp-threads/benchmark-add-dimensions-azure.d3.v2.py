@@ -2,14 +2,17 @@
 import ck.kernel as ck
 import os
 
+cost=1.53 # set USD cost per hour in a cloud to calculate usage cost
+          # for example, 1.53 for AWS EC2 c5.9xlarge (on demand)
+
 def do(i):
 
     # List performance entries
     r=ck.access({'action':'search',
                  'module_uoa':'experiment',
-#                 'repo_uoa':'local',
+                 'repo_uoa':'local',
 #                 'repo_uoa':'ck-request-asplos18-results'})
-                 'data_uoa':'ck-request-asplos18-caffe-intel-performance-*'})
+                 'data_uoa':'*ck-request-asplos18-caffe-intel-performance-*'})
     if r['return']>0: return r
     lst=r['lst']
 
@@ -89,6 +92,8 @@ def do(i):
 
         if used_gpgpu:
            # GPU used
+           dd['meta']['cpu_name']=''
+           dd['meta']['cpu_vendor']=''
            dd['meta']['platform_peak_power']=180 #Watts
            dd['meta']['platform_price']=700 # $
            dd['meta']['platform_price_date']='20180101' # date
@@ -97,12 +102,14 @@ def do(i):
            dd['meta']['gpgpu_name']=''
            dd['meta']['gpgpu_vendor']=''
            dd['meta']['platform_peak_power']=105 #Watts
-           dd['meta']['platform_price']=1166 # $
-           dd['meta']['platform_price_date']='20141212' # date
+           dd['meta']['platform_price']=800 # $
+           dd['meta']['platform_price_date']='20180101' # date
 
         dd['meta']['artifact']='e7cc77d72f13441e' # artifact description
 
         dd['meta']['model_precision']=prec
+
+        dd['meta']['processed']='yes'
 
         # Updating entry
         r=ck.access({'action':'update',
@@ -133,6 +140,19 @@ def do(i):
                if r['return']>0: return r
                d=r['dict']
 
+               d['##features#processed#min']='yes'
+
+               # Clean up keys
+               d1={}
+               for k in d:
+                   v=d[k]
+                   if not k.startswith('##characteristics#run#inference_latency') and \
+                      not k.startswith('##characteristics#run#prediction_time_avg_s') and \
+                      not k.startswith('##characteristics#run#inference_throughput') and \
+                      not k.startswith('##characteristics#run#usage_cost'):
+                      d1[k]=v
+               d=d1
+
                # Unify execution time + batch size
                x=d.get('##characteristics#run#REAL_ENV_CK_CAFFE_BATCH_SIZE#min','')
                if x!=None and x!='':
@@ -141,10 +161,26 @@ def do(i):
 
                   tall=d.get('##characteristics#run#time_fw_s#all',[])
 
+                  if batch==1:
+                     # inference latency
+                     d['##features#measuring_latency#min']='yes'
+
+                     r=ck.access({'action':'stat_analysis',
+                                  'module_uoa':'experiment',
+                                  'dict':d,
+                                  'dict1':{'##characteristics#run#inference_latency':tall}
+                                 })
+                     if r['return']>0: return r
+
                   tnew=[]
+                  cnew=[]
                   for t in tall:
                       t1=t/batch
                       tnew.append(t1)
+
+                      c1=t1*cost/(60*60)
+                      if c1!=0:
+                         cnew.append(c1)
                   
                   r=ck.access({'action':'stat_analysis',
                                'module_uoa':'experiment',
@@ -152,6 +188,33 @@ def do(i):
                                'dict1':{'##characteristics#run#prediction_time_avg_s':tnew}
                               })
                   if r['return']>0: return r
+
+                  if len(cnew)>0:
+                     r=ck.access({'action':'stat_analysis',
+                                  'module_uoa':'experiment',
+                                  'dict':d,
+                                  'dict1':{'##characteristics#run#usage_cost':cnew}
+                                 })
+                     if r['return']>0: return r
+
+                     d['##characteristics#run#usage_cost_per_hour#min']=cost
+                     d['##characteristics#run#usage_cost_date']='20180403'
+
+                  # Throughput for all batches
+                  if len(tnew)>0:
+                     tall=tnew # from previous calculation
+
+                     tnew=[]
+                     for t in tall:
+                         t1=1/t
+                         tnew.append(t1)
+                     
+                     r=ck.access({'action':'stat_analysis',
+                                  'module_uoa':'experiment',
+                                  'dict':d,
+                                  'dict1':{'##characteristics#run#inference_throughput':tnew}
+                                 })
+                     if r['return']>0: return r
 
                d['##features#model_size#min']=model_size
 
