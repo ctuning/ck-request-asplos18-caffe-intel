@@ -160,7 +160,7 @@ $ cd `ck find ck-request-asplos18-caffe-intel:script:explore-batch-size-openmp-t
 ```
 
 - benchmark-merge-performance-with-accuracy.py - merges performance entries with accuracy
-- benchmark-add-dimensions.py - adds extra dimensions
+- benchmark-add-dimensions-*.py - adds extra dimensions for different platforms
 
 CPU price is taken from [here](https://ark.intel.com/products/81705/Intel-Xeon-Processor-E5-2650-v3-25M-Cache-2_30-GHz).
 
