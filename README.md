@@ -166,3 +166,10 @@ CPU price is taken from [here](https://ark.intel.com/products/81705/Intel-Xeon-P
 
 All updated experimental results are then moved to [ck-request-asplos18-results-caffe-intel repository](https://github.com/ctuning/ck-request-asplos18-results-caffe-intel).
 The best configurations are also moved to [ck-request-asplos18-results repo](https://github.com/ctuning/ck-request-asplos18-results).
+
+## Reviewers
+
+This workflow was converted to CK and validated by the following reviewers:
+* [Anton Lokhmotov](http://dividiti.com)
+* [Flavio Vella](http://dividiti.com)
+* [Grigori Fursin](http://fursin.net/research.html)
