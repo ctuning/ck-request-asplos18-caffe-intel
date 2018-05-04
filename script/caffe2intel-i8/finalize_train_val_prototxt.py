@@ -15,6 +15,7 @@ from google.protobuf import text_format
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('-m', '--model', action='store', dest='MODEL')
+  parser.add_argument('-t', '--target', action='store', dest='TARGET')
   params = parser.parse_args()
 
   print('Postprocessing {} ...'.format(params.MODEL))
@@ -38,6 +39,6 @@ if __name__ == '__main__':
   # as it's type safe, so do it with plain string replacement
   txt = txt.replace('batch_size: 0', 'batch_size: $#val_batch_size#$')
 
-  with open(params.MODEL, 'w') as f:
+  with open(params.TARGET, 'w') as f:
     f.write(txt)  
 

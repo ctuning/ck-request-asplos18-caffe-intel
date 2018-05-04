@@ -21,7 +21,7 @@ function ConvertPrototxt() {
   echo
 
   if [ -f ${INSTALL_DIR}/${INPUT_PROTOTXT} ]; then
-    rm ${INSTALL_DIR}/${INPUT_PROTOTXT}
+    rm /tmp/${INPUT_PROTOTXT}
   fi
   if [ -f ${INSTALL_DIR}/${OUTPUT_PROTOTXT} ]; then 
     rm ${INSTALL_DIR}/${OUTPUT_PROTOTXT}
@@ -29,12 +29,12 @@ function ConvertPrototxt() {
 
   python ${THIS_SCRIPT_DIR}/prepare_prototxt.py \
     --model=${ORIGINAL_PACKAGE_DIR}/${INPUT_PROTOTXT} \
-    --target=${INSTALL_DIR}/${INPUT_PROTOTXT}
+    --target=/tmp/${INPUT_PROTOTXT}
 
   python ${CK_ENV_LIB_CAFFE}/../src/scripts/calibrator.py \
     --root=${CK_ENV_LIB_CAFFE} \
     --weights=${CK_ENV_MODEL_CAFFE_WEIGHTS} \
-    --model=${INSTALL_DIR}/${INPUT_PROTOTXT} \
+    --model=/tmp/${INPUT_PROTOTXT} \
     --iterations=${ITERATIONS} \
     --blob_name=${BLOB_NAME}
 
@@ -44,9 +44,11 @@ function ConvertPrototxt() {
     FINALIZE_SCRIPT=finalize_train_val_prototxt.py
   fi
   python ${THIS_SCRIPT_DIR}/${FINALIZE_SCRIPT} \
-    --model=${INSTALL_DIR}/${OUTPUT_PROTOTXT}
+    --model=/tmp/${INPUT_PROTOTXT} \
+    --target=${INSTALL_DIR}/${OUTPUT_PROTOTXT}
 
-  rm ${INSTALL_DIR}/${INPUT_PROTOTXT}
+  rm /tmp/${INPUT_PROTOTXT}
+  rm /tmp/${OUTPUT_PROTOTXT}
 }
 
 # At this path, there should be a module that can be imported.

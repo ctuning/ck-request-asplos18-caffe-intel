@@ -15,6 +15,7 @@ from google.protobuf import text_format
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('-m', '--model', action='store', dest='MODEL')
+  parser.add_argument('-t', '--target', action='store', dest='TARGET')
   params = parser.parse_args()
 
   print('Postprocessing {} ...'.format(params.MODEL))
@@ -32,7 +33,10 @@ if __name__ == '__main__':
     net.layer.remove(layer)
 
   # Prepare standart input
-  net.input.append('data')
+  if not 'data' in net.input:
+    net.input.append('data')
+  while net.input_shape:
+    del net.input_shape[0]
   shape = net.input_shape.add()
   shape.dim.append(0)
   shape.dim.append(3)
@@ -46,5 +50,5 @@ if __name__ == '__main__':
   # into integer fields, so do it with plain string replacement
   txt = txt.replace('dim: 0', 'dim: $#batch_size#$')
 
-  with open(params.MODEL, 'w') as f:
+  with open(params.TARGET, 'w') as f:
     f.write(txt)

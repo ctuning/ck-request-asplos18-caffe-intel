@@ -22,9 +22,14 @@ if __name__ == '__main__':
   with open(params.MODEL) as f:
     target = f.read()
 
-  target = target.replace('$#val_mean#$', os.getenv('CK_ENV_MODEL_CAFFE_MEAN_BIN'))
+  mean_file = os.getenv('CK_ENV_MODEL_CAFFE_MEAN_BIN')
+  if mean_file:
+    target = target.replace('$#val_mean#$', mean_file)
+    target = target.replace('$#train_mean#$', mean_file)
   target = target.replace('$#val_lmdb#$', os.getenv('CK_CAFFE_IMAGENET_VAL_LMDB'))
+  target = target.replace('$#train_lmdb#$', os.getenv('CK_CAFFE_IMAGENET_VAL_LMDB'))
   target = target.replace('$#val_batch_size#$', os.getenv('TRAIN_VAL_BATCH_SIZE'))
+  target = target.replace('$#train_batch_size#$', os.getenv('TRAIN_VAL_BATCH_SIZE'))
   target = target.replace('$#batch_size#$', os.getenv('DEPLOY_BATCH_SIZE'))
 
   with open(params.TARGET, 'w') as f:
