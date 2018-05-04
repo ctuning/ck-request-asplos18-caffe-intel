@@ -11,26 +11,6 @@ layer {
   top: "data"
   top: "label"
   include {
-    phase: TRAIN
-  }
-  transform_param {
-    crop_size: 227
-    mean_value: 104
-    mean_value: 117
-    mean_value: 123
-  }
-  data_param {
-    source: "$#train_lmdb#$"
-    batch_size: $#train_batch_size#$
-    backend: LMDB
-  }
-}
-layer {
-  name: "data"
-  type: "Data"
-  top: "data"
-  top: "label"
-  include {
     phase: TEST
   }
   transform_param {
@@ -41,7 +21,7 @@ layer {
   }
   data_param {
     source: "$#val_lmdb#$"
-    batch_size: $#val_batch_size#$ #not *iter_size
+    batch_size: $#val_batch_size#$
     backend: LMDB
   }
 }

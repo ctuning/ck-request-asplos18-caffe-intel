@@ -11,7 +11,7 @@
       "DEPLOY_ITERATIONS": 4, 
       "MODEL_IMAGE_SIZE": 227, 
       "TRAIN_VAL_BATCH_SIZE": 64, 
-      "TRAIN_VAL_BLOB_NAME": "acc/top-1", 
+      "TRAIN_VAL_BLOB_NAME": "accuracy", 
       "TRAIN_VAL_ITERATIONS": 4
     }, 
     "no_os_in_suggested_path": "yes", 
@@ -25,8 +25,8 @@
       }, 
       "val": {
         "accuracy_layers": [
-          "acc/top-1", 
-          "acc/top-5", 
+          "accuracy", 
+          "accuracy_top5", 
           "loss"
         ], 
         "substitute": {
