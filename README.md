@@ -56,7 +56,7 @@ The minimal installation requires:
 * Python 2.7 or 3.3+ (limitation is mainly due to unitests)
 * Git command line client.
 
-You can install CK in your local user space as following:
+You can install CK in your local user space as follows:
 
 ```
 $ git clone http://github.com/ctuning/ck
