@@ -261,13 +261,12 @@ CPU price is taken from [here](https://ark.intel.com/products/81705/Intel-Xeon-P
 All updated experimental results are then moved to [ck-request-asplos18-results-caffe-intel repository](https://github.com/ctuning/ck-request-asplos18-results-caffe-intel).
 The best configurations are also moved to [ck-request-asplos18-results repo](https://github.com/ctuning/ck-request-asplos18-results).
 
-## ReQuEST scoreboard
+## See accepted results on the live scoreboard
 
-Best and reference results are now added to the [ReQuEST scoreboard](http://cKnowledge.org/request-results).
+[Link](http://cKnowledge.org/request-results)
 
-## Reviewers
+## Further discussions
 
-This workflow was converted to CK and validated by the following reviewers:
-* [Anton Lokhmotov](http://dividiti.com)
-* [Flavio Vella](http://dividiti.com)
-* [Grigori Fursin](http://fursin.net/research.html)
+* [Collective Knowledge mailing list](http://groups.google.com/group/collective-knowledge)
+* [Collective Knowledge slack](https://collective-knowledge.slack.com)
+* [Artifact evaluation mailing list](http://groups.google.com/group/artifact-evaluation)
