@@ -1,4 +1,6 @@
-# Collective Knowledge workflow for image classification submitted to [ReQuEST at ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html)
+[![logo](https://github.com/ctuning/ck-guide-images/blob/master/logo-powered-by-ck.png)](https://github.com/ctuning/ck)
+
+# Collective Knowledge workflow for image classification submitted to the [ReQuEST tournament at ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html)
 
 * **Title:** Highly Efficient 8-bit Low Precision Inference of Convolutional Neural Networks with IntelCaffe
 * **Authors:** Jiong Gong, Haihao Shen, Guoming Zhang, Xiaoli Liu, Shane Li, Ge Jin, Niharika Maheshwari
