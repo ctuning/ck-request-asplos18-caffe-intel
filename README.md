@@ -1,9 +1,19 @@
 [![logo](https://github.com/ctuning/ck-guide-images/blob/master/logo-powered-by-ck.png)](https://github.com/ctuning/ck)
 
-# Collective Knowledge workflow for image classification submitted to the [ReQuEST tournament at ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html)
+This repository contains experimental workflow and all related artifacts 
+as portable, customizable and reusable [Collective Knowledge components](https://github.com/ctuning/ck)
+for image classification from the [1st ReQuEST tournament at ASPLOS'18](http://cknowledge.org/request-cfp-asplos2018.html) 
+on reproducible SW/HW co-design of deep learning (speed, accuracy, energy, costs).
+
+## References
 
 * **Title:** Highly Efficient 8-bit Low Precision Inference of Convolutional Neural Networks with IntelCaffe
 * **Authors:** Jiong Gong, Haihao Shen, Guoming Zhang, Xiaoli Liu, Shane Li, Ge Jin, Niharika Maheshwari
+
+* [ACM paper](https://doi.org/10.1145/3229762.3229763)
+* [ACM artifact](https://doi.org/10.1145/3229769)
+
+* [arXiv ReQuEST goals](https://arxiv.org/abs/1801.06378)
 
 ## Artifact check-list (meta-information)
 
