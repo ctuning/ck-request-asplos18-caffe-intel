@@ -15,9 +15,13 @@ on reproducible SW/HW co-design of deep learning (speed, accuracy, energy, costs
 
 * [arXiv ReQuEST goals](https://arxiv.org/abs/1801.06378)
 
-## Artifact check-list (meta-information)
+* [ReQuEST submission and reviewing guidelines](http://cknowledge.org/request-cfp-asplos2018.html)
+* [ReQuEST workflows](https://github.com/ctuning/ck-request-asplos18-results)
+* [ReQuEST scoreboard](http://cKnowledge.org/request-results)
 
-We use the standard [Artifact Description check-list](http://ctuning.org/ae/submission_extra.html) from systems conferences including CGO, PPoPP, PACT and SuperComputing.
+## Artifact check-list
+
+Details: [Link](http://cTuning.org/ae/submission_extra.html)
 
 * **Algorithm:** image classification
 * **Program:** 
@@ -89,6 +93,54 @@ $ ck pull repo:ck-request-asplos18-caffe-intel
 $ ck install package:lib-caffe-intel-request-cpu
 ```
 
+### Install global software dependencies for Caffe (Ubuntu)
+
+Please, follow installation guide from the [ck-caffe repository](https://github.com/dividiti/ck-caffe):
+
+#### Installing general dependencies
+
+```
+$ sudo apt install coreutils \
+                   build-essential \
+                   make \
+                   cmake \
+                   wget \
+                   git \
+                   python \
+                   python-pip
+```
+
+#### Installing essential Caffe dependencies
+```
+$ sudo apt install libleveldb-dev \
+                   libsnappy-dev \
+                   gfortran
+```
+
+#### Installing optional Caffe dependencies
+CK can automatically build the following dependencies from source using versions that should work well together. Installing via `apt`, however, is somewhat faster.
+
+```
+$ sudo apt install libboost-all-dev \
+                   libgflags-dev \
+                   libgoogle-glog-dev \
+                   libhdf5-serial-dev \
+                   liblmdb-dev \
+                   libprotobuf-dev \
+                   protobuf-compiler \
+                   libopencv-dev
+$ sudo pip install protobuf
+```
+
+### Install reference Caffe CPU version
+
+You can install refernece Caffe CPU version using the following CK package:
+```
+$ ck install package:lib-caffe-bvlc-master-cpu-universal
+```
+
+You can use it to prepare ImageNet validation datasets
+
 ### Install ImageNet validation datasets
 
 **NB:** If you already have the ImageNet validation dataset downloaded, e.g. in
@@ -144,6 +196,20 @@ $ ck install ck-request-asplos18-caffe-intel:package:caffemodel-inception-v3-int
 $ ck install package:caffemodel-ssd-voc-300
 ```
 
+### Detect Intel compilers and install Intel Caffe
+
+You must have Intel compilers installed on your system, for example in /opt/intel.
+In such case you can register Intel compilers in the CK as follows:
+```
+$ ck detect soft:compiler.icc --search_dirs=/opt/intel
+
+$ ck show env --tags=compiler
+```
+
+You can now install Intel Caffe as follows (select detect Intel compiler if asked by CK):
+```
+$ ck install package:lib-caffe-intel-request-cpu
+```
 
 ## Usage instructions
 
