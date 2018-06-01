@@ -148,15 +148,217 @@ On throughput measurement, we use batch size 64, 64, and 32 for ResNet-50, Incep
 You will get the similar performance data within 5\% range for both throughput and latency. Since AWS instances are virtualized, there might be larger variances than bare metal machines. I recommend the evaluators to collect the performance data three times to pick the stable data points. On accuracy, you will get equivalent accuracy result.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Experiment customization}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Notes}
 For SSD, we added DetectOutput layer in order to calculate the mAP.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% When adding this appendix to your paper,
-% please remove below part
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Unified installation and evaluation for the ReQuEST scoreboard using Collective Knowledge framework}
+
+\subsubsection{Minimal CK installation}
+
+The minimal installation requires:
+
+\begin{packed_itemize}
+ \item Python 2.7 or 3.3+ (limitation is mainly due to unitests)
+ \item Git command line client.
+\end{packed_itemize}
+
+You can install CK in your local user space as follows:
+
+\begin{verbatim}
+$ git clone http://github.com/ctuning/ck
+$ export PATH=$PWD/ck/bin:$PATH
+$ export PYTHONPATH=$PWD/ck:$PYTHONPATH
+\end{verbatim}
+
+You can also install CK via PIP with sudo to avoid setting up environment variables yourself:
+
+\begin{verbatim}
+$ sudo pip install ck
+\end{verbatim}
+
+\subsubsection{Install Intel Caffe from the ReQuEST artifact branch}
+
+\begin{verbatim}
+$ ck pull repo:ck-request-asplos18-caffe-intel
+$ ck install package:lib-caffe-intel-request-cpu
+\end{verbatim}
+
+\subsubsection{Install global software dependencies for Caffe (Ubuntu)}
+
+Please, follow installation guide from the ck-caffe repository: \url{https://github.com/dividiti/ck-caffe}:
+
+\textbf{Installing general dependencies}
+
+\begin{verbatim}
+$ sudo apt install coreutils \
+                   build-essential \
+                   make \
+                   cmake \
+                   wget \
+                   git \
+                   python \
+                   python-pip
+\end{verbatim}
+
+\textbf{Installing essential Caffe dependencies}
+\begin{verbatim}
+$ sudo apt install libleveldb-dev \
+                   libsnappy-dev \
+                   gfortran
+\end{verbatim}
+
+\textbf{Installing optional Caffe dependencies}
+CK can automatically build the following dependencies from source using versions that should work well together. Installing via `apt`, however, is somewhat faster.
+
+\begin{verbatim}
+$ sudo apt install libboost-all-dev \
+                   libgflags-dev \
+                   libgoogle-glog-dev \
+                   libhdf5-serial-dev \
+                   liblmdb-dev \
+                   libprotobuf-dev \
+                   protobuf-compiler \
+                   libopencv-dev
+$ sudo pip install protobuf
+\end{verbatim}
+
+\subsubsection{Install reference Caffe CPU version}
+
+You can install refernece Caffe CPU version using the following CK package:
+\begin{verbatim}
+$ ck install package:lib-caffe-bvlc-master-cpu-universal
+\end{verbatim}
+
+You can use it to prepare ImageNet validation datasets
+
+\subsubsection{Install ImageNet validation datasets}
+
+**NB:** If you already have the ImageNet validation dataset downloaded, e.g. in
+`/datasets/ilsvrc2012\_val/`, you can register it with CK as follows:
+
+\begin{verbatim}
+$ ck detect soft:dataset.imagenet.val --full_path=/datasets/ilsvrc2012_val/ILSVRC2012_val_00000001.JPEG
+\end{verbatim}
+
+\textbf{Reduced (500 images)}
+\begin{verbatim}
+$ ck install package:imagenet-2012-val-min
+\end{verbatim}
+
+\textbf{Full (50,000 images)}
+\begin{verbatim}
+$ ck install package:imagenet-2012-val
+\end{verbatim}
+
+\textbf{Install Caffe models and resize ImageNet dataset}
+
+**NB:** If you already have the ImageNet validation dataset resized as an LMDB file, 
+e.g. in `/datasets/dataset-imagenet-ilsvrc2012-val-lmdb-dataset.imagenet.val-ilsvrc2012\_val\_full-resize-320/data/data.mdb`, 
+you can register it with CK as follows:
+
+\begin{verbatim}
+$ ck detect soft:dataset.imagenet.val.lmdb --full_path=/datasets/dataset-imagenet-ilsvrc2012-val-lmdb-
+    dataset.imagenet.val-ilsvrc2012_val_full-resize-320/data/data.mdb
+\end{verbatim}
+
+\textbf{ResNet50}
+
+**NB:** ResNet50 uses an ImageNet mean file of resolution `224x224`, so the inputs must match that.
+
+\begin{verbatim}
+$ ck install ck-caffe:package:imagenet-2012-val-lmdb-224
+$ ck install ck-caffe:package:caffemodel-resnet50
+$ ck install ck-request-asplos18-caffe-intel:package:caffemodel-resnet50-intel-i8
+\end{verbatim}
+
+\textbf{Inception-v3}
+
+**NB:** Inception-v3 uses an ImageNet mean file of resolution `320x320`, so the inputs must match that.
+
+\begin{verbatim}
+$ ck install ck-caffe:package:imagenet-2012-val-lmdb-320
+$ ck install ck-caffe:package:caffemodel-inception-v3
+$ ck install ck-request-asplos18-caffe-intel:package:caffemodel-inception-v3-intel-i8
+\end{verbatim}
+
+\textbf{SSD}
+
+\begin{verbatim}
+$ ck install package:caffemodel-ssd-voc-300
+\end{verbatim}
+
+\subsubsection{Detect Intel compilers and install Intel Caffe}
+
+You must have Intel compilers installed on your system, for example in /opt/intel.
+In such case you can register Intel compilers in the CK as follows:
+\begin{verbatim}
+$ ck detect soft:compiler.icc --search_dirs=/opt/intel
+
+$ ck show env --tags=compiler
+\end{verbatim}
+
+You can now install Intel Caffe as follows (select detect Intel compiler if asked by CK):
+\begin{verbatim}
+$ ck install package:lib-caffe-intel-request-cpu
+\end{verbatim}
+
+\subsection{Usage instructions}
+
+\subsubsection{Measure accuracy}
+\begin{verbatim}
+$ ck run program:caffe --cmd_key=test_cpu
+\end{verbatim}
+
+Results:
+\begin{packed_itemize}
+ \item \url{https://github.com/ctuning/ck-request-asplos18-caffe-intel/issues/7#issuecomment-374265425}
+ \item \url{https://github.com/ctuning/ck-request-asplos18-caffe-intel/issues/9#issuecomment-374268187}
+\end{packed_itemize}
+
+\subsubsection{Measure latency}
+\begin{verbatim}
+$ ck run program:caffe --cmd_key=time_cpu --env.CK_CAFFE_BATCH_SIZE=1
+\end{verbatim}
+
+\subsubsection{Measure throughput}
+\begin{verbatim}
+$ ck run program:caffe --cmd_key=time_cpu --env.CK_CAFFE_BATCH_SIZE=64
+\end{verbatim}
+
+\subsubsection{Explore performance}
+
+Explore how the execution time is affected by changing:
+\begin{packed_itemize}
+ \item [`nt`] the number of OpenMP threads (e.g. from 1 to 20 on a 10-core machine with hyperthreading);
+ \item [`bs`] the batch size (e.g. from 1 to 64).
+\end{packed_itemize}
+
+**NB:** You may want to change the `bs` and `nt` space exploration parameters, as well as
+`platform\_tags` in the `benchmarking.py` script before launching it as follows:
+
+\begin{verbatim}
+$ python `ck find script:explore-batch-size-openmp-threads`/benchmarking.py
+\end{verbatim}
+
+\subsection{Unify output and add extra dimensions}
+
+Scripts to unify all experiments and add extra dimensions in ReQuEST format for further comparison and visualization are available in the following entry:
+\begin{verbatim}
+$ cd `ck find ck-request-asplos18-caffe-intel:script:explore-batch-size-openmp-threads`
+\end{verbatim}
+
+\begin{packed_itemize}
+ \item benchmark-merge-performance-with-accuracy.py - merges performance entries with accuracy
+ \item benchmark-add-dimensions-*.py - adds extra dimensions for different platforms
+\end{packed_itemize}
+
+CPU price is taken from \url{https://ark.intel.com/products/81705/Intel-Xeon-Processor-E5-2650-v3-25M-Cache-2\_30-GHz}.
+
+All updated experimental results are then moved to the ck-request-asplos18-results-caffe-intel repository: \url{https://github.com/ctuning/ck-request-asplos18-results-caffe-intel}.
+The best configurations are also moved to the ck-request-asplos18-results repo: \url{https://github.com/ctuning/ck-request-asplos18-results}.
 
 \end{document}
 
