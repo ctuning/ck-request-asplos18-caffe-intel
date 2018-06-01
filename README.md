@@ -35,9 +35,9 @@ KMP HW SUBSET=1T
 KMP AFFINITY=granularity=fine,compact
 OMP NUM THREADS=18
 ```
-* **Hardware:** single socket (18 cores) on c5.18xlarge
+* **Hardware:** single socket (18 cores) on AWS c5.18xlarge
 * **Run-time state:** 
-* **Execution:**
+* **Execution:** automated via CK command line
 * **Metrics:** 
 ```
 Throughput: images per second.
@@ -45,7 +45,7 @@ Latency: milli-second.
 Accuracy: % top-1/top-5/mAP.
 ```
 * **Output:** classification result; execution time; accuracy
-* **Experiments:** Automated via CK command line
+* **Experiments:** 
 
 ```
 We use batch size 64, 64, and 32 to measure the
@@ -60,7 +60,7 @@ We use batch size 1 to measure the latency.
 * **CK workflow framework used?** Yes
 * **CK workflow URL:** https://github.com/ctuning/ck-request-asplos18-caffe-intel
 * **CK results URL:** https://github.com/ctuning/ck-request-asplos18-results-caffe-intel
-
+* **Original artifact:** https://github.com/intel/caffe/wiki/ReQuEST-Artifact-Installation-Guide
 
 ## Installation instructions
 

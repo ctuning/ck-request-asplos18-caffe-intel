@@ -1,0 +1,162 @@
+\documentclass[sigplan]{acmart}
+
+\usepackage{booktabs} % For formal tables
+
+
+% Copyright
+%\setcopyright{none}
+%\setcopyright{acmcopyright}
+%\setcopyright{acmlicensed}
+%\setcopyright{rightsretained}
+%\setcopyright{usgov}
+%\setcopyright{usgovmixed}
+%\setcopyright{cagov}
+%\setcopyright{cagovmixed}
+
+
+\newenvironment{packed_itemize}{
+\begin{itemize}
+  \setlength{\itemsep}{1pt}
+  \setlength{\parskip}{0pt}
+  \setlength{\parsep}{0pt}
+}{\end{itemize}}
+
+% DOI
+\acmDOI{10.1145/3229762.3229763}
+
+% ISBN
+% \acmISBN{123-4567-24-567/08/06}
+
+%Conference
+\acmConference[ReQuEST at ASPLOS'18]{1st ACM Reproducible Quality-Efficient Systems Tournament on Co-designing Pareto-efficient Deep Learning}{March 2018}{Williamsburg, VA, USA}
+\acmYear{2018}
+\copyrightyear{2018}
+
+%\acmPrice{15.00}
+
+%\acmBadgeL[http://ctuning.org/ae/ppopp2016.html]{ae-logo}
+%\acmBadgeR[http://ctuning.org/ae/ppopp2016.html]{ae-logo} 
+
+\begin{document}
+
+\title{Highly Efficient 8-bit Low Precision Inference of Convolutional Neural Networks with IntelCaffe \\}
+
+\author{Jiong Gong, Jiong Gong, Haihao Shen, Guoming Zhang, Xiaoli Liu, Shane Li, Ge Jin, Niharika Maheshwari, Evarist Fomenko, Eden Segal}
+\affiliation{%
+  \institution{Intel Corporation}
+}
+\email{jiong.gong, haihao.shen, guoming.zhang, xiaoli.liu, li.shane, ge.jin, niharika.maheshwari, evarist.m.fomenko, eden.segal@intel.com}
+
+\renewcommand{\shortauthors}{}
+\renewcommand{\shorttitle}{}
+
+\begin{abstract}
+High throughput and low latency inference of deep neural networks are critical for the deployment of deep learning applications. This paper presents the efficient inference techniques of IntelCaffe, the first Intel\textsuperscript{\textregistered} optimized deep learning framework that supports efficient 8-bit low precision inference and model optimization techniques of convolutional neural networks on Intel\textsuperscript{\textregistered} Xeon\textsuperscript{\textregistered} Scalable Processors. The 8-bit optimized model is automatically generated with a calibration process from FP32 model without the need of fine-tuning or retraining. We show that the inference throughput and latency with ResNet-50, Inception-v3 and SSD are improved by 1.38X-2.9X and 1.35X-3X respectively with neglectable accuracy loss from IntelCaffe FP32 baseline and by 56X-75X and 26X-37X from BVLC Caffe. All these techniques have been open-sourced on IntelCaffe GitHub\footnote{https://github.com/intel/caffe}, and the artifact is provided to reproduce the result on Amazon AWS Cloud.
+\end{abstract}
+
+\keywords{Intel Caffe, Convolutional Neural Network, Deep Learning, Model Optimization}
+
+\maketitle
+
+\input{paper_text}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{paper}
+
+\newpage
+
+\onecolumn
+
+\appendix
+\section{Artifact Appendix}
+
+Submission and reviewing methodology: \\
+{\em http://cTuning.org/ae/submission-20171101.html}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Abstract}
+
+This Artifact Appendix describes experimental workflow,
+artifacts and results from this paper evaluated 
+during the 1st reproducible ReQuEST tournament at the ACM ASPLOS'18:
+
+\begin{packed_itemize}
+  \item {\bf Latest CK workflow:} \url{https://github.com/ctuning/ck-request-asplos18-caffe-intel}
+  \item {\bf CK results:} \url{https://github.com/ctuning/ck-request-asplos18-results-caffe-intel}
+  \item {\bf Artifact DOI:} \url{https://doi.org/10.1145/3229769}
+  \item {\bf ReQuEST submission and reviewing guidelines:} \url{http://cknowledge.org/request-cfp-asplos2018.html} (\cite{request-asplos18})
+  \item {\bf ReQuEST goals:} \cite{cm:29db2248aba45e59:0c7348dfbadd5b95}
+  \item {\bf ReQuEST workflows:} \url{https://github.com/ctuning/ck-request-asplos18-results}
+  \item {\bf ReQuEST scoreboard:} \url{http://cKnowledge.org/request-results}
+\end{packed_itemize}
+
+Hardware and software configurations and execution steps are
+provided to reproduce the inference throughput and latency
+result mentioned in this paper.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Artifact check-list}
+
+Details: \url{http://cTuning.org/ae/submission_extra.html}
+
+\begin{itemize}
+  \item {\bf Algorithm}: image classification
+  \item {\bf Compilation: } Intel C++ Compiler 17.0.5 20170817
+  \item {\bf Binary: } will be compiled on a target platform (caffe)
+  \item {\bf Data set: } Random data for throughput and latency. ImageNet 2012 validation (50,000 images) and PASCAL VOC2007 for accuracy.
+  \item {\bf Run-time environment: }
+  KMP\_HW\_SUBSET=1T \\
+  KMP\_AFFINITY=granularity=fine,compact \\
+  OMP\_NUM\_THREADS=18
+  \item {\bf Hardware: } single socket (18 cores) on AWS c5.18xlarge.
+  \item {\bf Execution: } automated via CK command line (python benchmark.py -mode \newline accuracy[fps$|$throughput])
+  \item {\bf Metrics: } \\ Throughput: images per second. \\ Latency: milli-second. \\ Accuracy: \% top-1/top-5/mAP.
+  \item {\bf Output: } classification result; execution time; accuracy
+  \item {\bf Experiments: } We use batch size 64, 64, and 32 to measure the throughput for ResNet-50, Inception-V3, and SSD respectively. We use batch size 1 to measure the latency.
+  \item {\bf How much disk space required (approximately)?:} 
+  \item {\bf How much time is needed to prepare workflow (approximately)?:} 
+  \item {\bf How much time is needed to complete experiments (approximately)?:}
+  \item {\bf Publicly available?:} Yes
+  \item {\bf Code license?:} 
+  \item {\bf Collective Knowledge workflow framework used?:} Yes
+  \item {\bf CK workflow URL:} \url{https://github.com/ctuning/ck-request-asplos18-caffe-intel}
+  \item {\bf CK results URL:} \url{https://github.com/ctuning/ck-request-asplos18-results-caffe-intel}
+  \item {\bf Original artifact URL:} \url{https://github.com/intel/caffe/wiki/ReQuEST-Artifact-Installation-Guide}
+
+\end{itemize}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Description}
+
+\subsubsection{How delivered}
+AWS Public Deep Learning Image containing pre-built BVLC Caffe, IntelCaffe GitHub.
+\subsubsection{Hardware dependencies}
+Amazon AWS c5.18xlarge instance.
+\subsubsection{Software dependencies}
+IntelCaffe (branch: request\_artifact), BVLC Caffe, Intel\textsuperscript{\textregistered} C++ Compiler
+\subsubsection{Data sets}
+Fake dataset, ImageNet-1k and PASCAL VOC2007
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Installation}
+https://github.com/intel/caffe/wiki/ReQuEST-Artifact-Installation-Guide
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Experiment workflow}
+On throughput measurement, we use batch size 64, 64, and 32 for ResNet-50, Inception-V3, and SSD, respectively. We measure the latency with the single batch on one socket. On accuracy, the auxiliary script would first calibrate the FP32 models of ResNet-50, Inception-V3 and SSD on the ImageNet-1k and PASCAL VOC2007 dataset, generating 8-bit low precision prototxt files. Then these files can be executed on the same datasets to get the test accuracy.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Evaluation and expected result}
+You will get the similar performance data within 5\% range for both throughput and latency. Since AWS instances are virtualized, there might be larger variances than bare metal machines. I recommend the evaluators to collect the performance data three times to pick the stable data points. On accuracy, you will get equivalent accuracy result.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Experiment customization}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Notes}
+For SSD, we added DetectOutput layer in order to calculate the mAP.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% When adding this appendix to your paper,
+% please remove below part
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}
+
