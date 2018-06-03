@@ -1,16 +1,23 @@
 {
-  "acm_badges":{
-    "available":"yes",
-    "functional":"yes",
-    "reusable":"yes",
-    "replicated":"yes",
-    "reproduced":""
+  "acm_badges": {
+    "available": "yes",
+    "functional": "yes",
+    "replicated": "yes",
+    "reproduced": "",
+    "reusable": "yes"
   },
-  "dois": [
-  ],
-  "html":"",
+  "artifact_doi": "https://doi.org/10.1145/3229769",
+  "dois": [],
+  "html": "",
+  "paper_doi": "https://doi.org/10.1145/3229762.3229763",
   "repos": [
-    {"name":"CK workflow", "url":"https://github.com/ctuning/ck-request-asplos18-caffe-intel"},
-    {"name":"CK results", "url":"https://github.com/ctuning/ck-request-asplos18-results-caffe-intel"}
+    {
+      "name": "CK workflow",
+      "url": "https://github.com/ctuning/ck-request-asplos18-caffe-intel"
+    },
+    {
+      "name": "CK results",
+      "url": "https://github.com/ctuning/ck-request-asplos18-results-caffe-intel"
+    }
   ]
 }

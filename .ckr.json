@@ -4,6 +4,7 @@
   "data_alias": "ck-request-asplos18-caffe-intel",
   "data_name": "ck-request-asplos18-caffe-intel",
   "dict": {
+    "ck_artifact":"e7cc77d72f13441e",
     "repo_deps": [
       {
         "repo_uoa": "ck-caffe",

@@ -1,1 +1,46 @@
-{}
+{
+  "affiliations": {
+    "1": {
+      "name": "Intel Corporation"
+    } 
+  }, 
+  "authors": [
+    {
+      "affiliation": "1", 
+      "name": "f44a5935e46091be"
+    },
+    {
+      "affiliation": "1", 
+      "name": "03b22246368e14b9" 
+    },
+    {
+      "affiliation": "1", 
+      "name": "ea34e33950364c00" 
+    },
+    {
+      "affiliation": "1", 
+      "name": "46378efbbc2aa386" 
+    },
+    {
+      "affiliation": "1", 
+      "name": "5374fced7b476ca1" 
+    },
+    {
+      "affiliation": "1", 
+      "name": "48e9af8f538cdf3e" 
+    },
+    {
+      "affiliation": "1", 
+      "name": "9a63b0e45ee920f8" 
+    },
+    {
+      "affiliation": "1", 
+      "name": "b1bfb3d7246d8854" 
+    },
+    {
+      "affiliation": "1", 
+      "name": "44711816c604ea27" 
+    }
+  ], 
+ "title":"Highly Efficient 8-bit Low Precision Inference of Convolutional Neural Networks with IntelCaffe"
+}
