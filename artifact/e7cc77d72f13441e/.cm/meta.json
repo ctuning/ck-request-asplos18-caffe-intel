@@ -12,7 +12,7 @@
   "ck_workflow": "https://github.com/ctuning/ck-request-asplos18-caffe-intel",
   "dois": [],
   "html": "",
-  "original_repo": "https://github.com/intel/caffe/wiki/ReQuEST-Artifact-Installation-Guide",
+  "original_repo": "https://github.com/intel/caffe",
   "paper_doi": "https://doi.org/10.1145/3229762.3229763",
   "repos": [
     {
