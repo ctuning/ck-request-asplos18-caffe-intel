@@ -23,7 +23,7 @@ on reproducible SW/HW co-design of deep learning (speed, accuracy, energy, costs
 
 Details: [Link](http://cTuning.org/ae/submission_extra.html)
 
-* **Algorithm:** image classification
+* **Algorithm:** image classification with ResNet-50, Inception-V3, and SSD
 * **Program:** 
 * **Compilation:** Intel C++ Compiler 17.0.5 20170817
 * **Transformations:**
@@ -52,11 +52,11 @@ We use batch size 64, 64, and 32 to measure the
 throughput for ResNet-50, Inception-V3, and SSD respectively.
 We use batch size 1 to measure the latency.
 ```
-* **How much disk space required (approximately)?** 
-* **How much time is needed to prepare workflow (approximately)?** 
-* **How much time is needed to complete experiments (approximately)?** 
+* **How much disk space required (approximately)?** ~800 MB
+* **How much time is needed to prepare workflow (approximately)?** About 1 hour to download libraries and compile them on device
+* **How much time is needed to complete experiments (approximately)?** About 1 hour for the original benchmark
 * **Publicly available?:** Yes
-* **Code license(s)?:** 
+* **Code license(s)?:** MIT license
 * **CK workflow framework used?** Yes
 * **CK workflow URL:** https://github.com/ctuning/ck-request-asplos18-caffe-intel
 * **CK results URL:** https://github.com/ctuning/ck-request-asplos18-results-caffe-intel
