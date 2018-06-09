@@ -2,11 +2,10 @@ High throughput and low latency inference of deep neural
 networks are critical for the deployment of deep learning
 applications. This paper presents the efficient inference
 techniques of IntelCaffe, the first
-Intel\textsuperscript{\textregistered} optimized deep learning
+Intel(R) optimized deep learning
 framework that supports efficient 8-bit low precision
 inference and model optimization techniques of convolutional
-neural networks on Intel\textsuperscript{\textregistered}
-Xeon\textsuperscript{\textregistered} Scalable Processors. The
+neural networks on Intel(R) Xeon(R) Scalable Processors. The
 8-bit optimized model is automatically generated with
 a calibration process from FP32 model without the need
 of fine-tuning or retraining. We show that the inference
@@ -14,7 +13,7 @@ throughput and latency with ResNet-50, Inception-v3 and SSD
 are improved by 1.38X-2.9X and 1.35X-3X respectively with
 neglectable accuracy loss from IntelCaffe FP32 baseline and by
 56X-75X and 26X-37X from BVLC Caffe. All these techniques have
-been open-sourced on IntelCaffe
-GitHub\footnote{https://github.com/intel/caffe}, and the
+been open-sourced on IntelCaffe GitHub
+(https://github.com/intel/caffe), and the
 artifact is provided to reproduce the result on Amazon AWS
 Cloud.

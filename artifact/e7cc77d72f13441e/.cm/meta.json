@@ -1,31 +1,42 @@
 {
   "acm_badges": {
-    "available": "yes",
-    "functional": "yes",
-    "replicated": "yes",
-    "reproduced": "",
+    "available": "yes", 
+    "functional": "yes", 
+    "replicated": "yes", 
+    "reproduced": "", 
     "reusable": "yes"
-  },
-  "artifact_doi": "https://doi.org/10.1145/3229769",
-  "ck_repo_results":"ck-request-asplos18-results-caffe-intel",
-  "ck_results": "https://github.com/ctuning/ck-request-asplos18-results-caffe-intel",
-  "ck_workflow": "https://github.com/ctuning/ck-request-asplos18-caffe-intel",
-  "dois": [],
-  "html": "",
-  "original_repo": "https://github.com/intel/caffe",
-  "paper_doi": "https://doi.org/10.1145/3229762.3229763",
+  }, 
+  "artifact_doi": "https://doi.org/10.1145/3229769", 
+  "ck_repo_results": "ck-request-asplos18-results-caffe-intel", 
+  "ck_results": "https://github.com/ctuning/ck-request-asplos18-results-caffe-intel", 
+  "ck_workflow": "https://github.com/ctuning/ck-request-asplos18-caffe-intel", 
+  "docker_images": [
+    {
+      "data_uoa": "request-asplos18-caffe-intel-ubuntu16.04-py35"
+    }
+  ], 
+  "dois": [], 
+  "html": "", 
+  "keywords": [
+    "Intel Caffe", 
+    "Convolutional Neural Network", 
+    "Deep Learning", 
+    "Model Optimization"
+  ], 
+  "original_repo": "https://github.com/intel/caffe", 
+  "paper_doi": "https://doi.org/10.1145/3229762.3229763", 
   "repos": [
     {
-      "name": "CK workflow",
+      "name": "CK workflow", 
       "url": "https://github.com/ctuning/ck-request-asplos18-caffe-intel"
-    },
+    }, 
     {
-      "name": "CK results",
+      "name": "CK results", 
       "url": "https://github.com/ctuning/ck-request-asplos18-results-caffe-intel"
     }
-  ],
+  ], 
   "tags": [
-    "request-tournament",
+    "request-tournament", 
     "request-asplos18"
   ]
 }
