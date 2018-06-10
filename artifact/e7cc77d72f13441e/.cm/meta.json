@@ -10,6 +10,8 @@
   "ck_repo_results": "ck-request-asplos18-results-caffe-intel", 
   "ck_results": "https://github.com/ctuning/ck-request-asplos18-results-caffe-intel", 
   "ck_workflow": "https://github.com/ctuning/ck-request-asplos18-caffe-intel", 
+  "copyright_holder_name": "Intel", 
+  "copyright_holder_year": "2018", 
   "docker_images": [
     {
       "data_uoa": "request-asplos18-caffe-intel-ubuntu16.04-py35"
@@ -23,6 +25,7 @@
     "Deep Learning", 
     "Model Optimization"
   ], 
+  "license": "authors' code is available under MIT license; CK workflow is available under BSD 3-clause license", 
   "original_repo": "https://github.com/intel/caffe", 
   "paper_doi": "https://doi.org/10.1145/3229762.3229763", 
   "repos": [
