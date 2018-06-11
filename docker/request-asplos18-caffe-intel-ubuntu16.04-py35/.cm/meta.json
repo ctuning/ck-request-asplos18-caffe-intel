@@ -5,7 +5,7 @@
       "push": "$#CK_DOCKER_ORGANIZATION#$/$#CK_DOCKER_NAME#$",
       "run": "--rm -it $#CK_DOCKER_ORGANIZATION#$/$#CK_DOCKER_NAME#$",
       "save": "-o $#CK_DOCKER_FILE#$ $#CK_DOCKER_ORGANIZATION#$/$#CK_DOCKER_NAME#$",
-      "import": "-i $#CK_DOCKER_ORGANIZATION#$/$#CK_DOCKER_FILE#$"
+      "import": "$#CK_DOCKER_FILE#$"
     }
   }
 }
