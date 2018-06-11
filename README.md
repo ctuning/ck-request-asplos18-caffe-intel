@@ -94,6 +94,30 @@ $ ck pull repo:ck-request-asplos18-caffe-intel
 $ ck install package:lib-caffe-intel-request-cpu
 ```
 
+### Install Intel Caffe from the ACM Digital Library snapshot
+
+It is possible to install and test the snapshot of this workflow 
+from the ACM Digital Library without interfering with your current CK installation.
+Download related file "request-asplos18-artifact-?-ck-workflow.zip"
+to a temporary directory, unzip it and then execute the following commands:
+```
+$ . ./prepare_virtual_ck.sh
+$ . ./start_virtual_ck.sh
+```
+All CK repositories will be installed in your current directory.
+You can now proceed with further evaluation as described below.
+
+### Install Intel Caffe from the ACM Digital Library Docker image
+
+It is also possible to use the Docker image for this workflow 
+from the ACM Digital Library. Download related file "request-asplos18-artifact-?-docker.tar"
+to a temporary directory and then execute the following commands:
+
+```
+$ ck import docker:request-asplos18-caffe-intel-ubuntu16.04-py35 --filename=request-asplos18-artifact-1-docker.tar  --sudo
+$ ck run docker:request-asplos18-caffe-intel-ubuntu16.04-py35 --sudo
+```
+
 ### Install global software dependencies for Caffe (Ubuntu)
 
 Please, follow installation guide from the [ck-caffe repository](https://github.com/dividiti/ck-caffe):
@@ -135,7 +159,7 @@ $ sudo pip install protobuf
 
 ### Install reference Caffe CPU version
 
-You can install refernece Caffe CPU version using the following CK package:
+You can install reference Caffe CPU version using the following CK package:
 ```
 $ ck install package:lib-caffe-bvlc-master-cpu-universal
 ```
