@@ -208,7 +208,8 @@ from the ACM Digital Library. Download related file "request-asplos18-artifact-?
 to a temporary directory and then execute the following commands:
 
 \begin{verbatim}
-$ ck import docker:request-asplos18-caffe-intel-ubuntu16.04-py35 --filename=request-asplos18-artifact-1-docker.tar  --sudo
+$ ck import docker:request-asplos18-caffe-intel-ubuntu16.04-py35 \
+    --filename=request-asplos18-artifact-1-docker.tar  --sudo
 $ ck run docker:request-asplos18-caffe-intel-ubuntu16.04-py35 --sudo
 \end{verbatim}
 
@@ -266,7 +267,8 @@ You can use it to prepare ImageNet validation datasets
 `/datasets/ilsvrc2012\_val/`, you can register it with CK as follows:
 
 \begin{verbatim}
-$ ck detect soft:dataset.imagenet.val --full_path=/datasets/ilsvrc2012_val/ILSVRC2012_val_00000001.JPEG
+$ ck detect soft:dataset.imagenet.val \
+    --full_path=/datasets/ilsvrc2012_val/ILSVRC2012_val_00000001.JPEG
 \end{verbatim}
 
 \textbf{Reduced (500 images)}
@@ -286,7 +288,8 @@ e.g. in `/datasets/dataset-imagenet-ilsvrc2012-val-lmdb-dataset.imagenet.val-ils
 you can register it with CK as follows:
 
 \begin{verbatim}
-$ ck detect soft:dataset.imagenet.val.lmdb --full_path=/datasets/dataset-imagenet-ilsvrc2012-val-lmdb-
+$ ck detect soft:dataset.imagenet.val.lmdb \
+    --full_path=/datasets/dataset-imagenet-ilsvrc2012-val-lmdb-
     dataset.imagenet.val-ilsvrc2012_val_full-resize-320/data/data.mdb
 \end{verbatim}
 
